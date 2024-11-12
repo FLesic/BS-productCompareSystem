@@ -1,0 +1,37 @@
+@import 'base.css';
+/*这行代码使用 CSS @import 规则导入了同目录下名为 base.css 的另一个样式文件的内容。这通常用于引入一些基础或通用的样式。*/
+#app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-weight: normal;
+}
+/*#app 是一个 ID 选择器，用于选择页面上 ID 为 app 的元素。这个规则设置了元素的最大宽度、外边距、内边距和字体权重。*/
+a,
+.green {
+    text-decoration: none;
+    color: hsla(160, 100%, 37%, 1);
+    transition: 0.4s;
+    padding: 3px;
+}
+/*这个规则是针对所有 <a> 链接和带有 .green 类的元素的。它移除了文本的下划线（text-decoration: none），定义了链接的颜色（使用 HSLA 颜色模型），添加了一个简单的过渡效果，并为链接添加了一些内边距。*/
+@media (hover: hover) {
+    a:hover {
+        background-color: hsla(160, 100%, 37%, 0.2);
+    }
+}
+/*这是一个媒体查询，用于检测设备是否支持悬停（hover）。如果支持，当用户悬停在 <a> 链接上时，会应用一个新的背景颜色。*/
+@media (min-width: 1024px) {
+    body {
+        display: flex;
+        place-items: center;
+    }
+    #app {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0 2rem;
+    }
+}
+/*这是另一个媒体查询，用于当屏幕宽度至少为 1024px 时。在这个查询中：
+body 选择器将 body 元素的显示属性设置为 flex，并使用 place-items 属性垂直居中其子元素。
+#app 选择器将 #app 元素的显示属性设置为 grid，定义了一个两列的网格布局，每列宽度相等，并调整了内边距。*/
