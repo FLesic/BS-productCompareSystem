@@ -9,7 +9,6 @@ const userInfo = ref({
   email: String
 })
 const testUserName = "任飞扬"
-const spaceString = ref("          ")
 </script>
 
 <template>

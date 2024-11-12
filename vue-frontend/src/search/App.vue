@@ -1,3 +1,12 @@
+<script setup>
+import UserInfo from "@/search/components/UserInfo.vue";
+import {Search} from "@element-plus/icons-vue";
+import SearchOutput from "@/search/components/SearchOutput.vue";
+import {ref} from "vue";
+
+const product_name = ref(null);
+</script>
+
 <template>
   <div class="common-layout">
     <el-container>
@@ -6,21 +15,22 @@
         <h2 class = "cool-font" data-shadow='PriceCompare'>PriceCompare</h2>
         <UserInfo></UserInfo>
         <div></div>
-        <SearchInput></SearchInput>
+        <el-input v-model="product_name" style="max-width: 50vw" placeholder="请输入商品">
+          <template #append>
+            <el-button :icon="Search"/>
+          </template>
+        </el-input>
       </el-header>
       <!-- 主要内容区域 -->
       <el-main class="main-content">
+        <SearchOutput></SearchOutput>
+        <div></div>
         <el-link href="/" type="primary"> 测试返回</el-link>
       </el-main>
     </el-container>
   </div>
 </template>
 
-<script setup>
-
-import SearchInput from "@/search/components/SearchInput.vue";
-import UserInfo from "@/search/components/UserInfo.vue";
-</script>
 <style>
 .common-layout {
   height: 100vh; /* 容器高度为视口高度 */
