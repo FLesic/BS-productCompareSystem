@@ -52,27 +52,27 @@ const collectProducts = ref([
     <el-avatar
         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
     />
-    <template #dropdown>
-      <el-dropdown-menu>
-        <!--TODO 具体逻辑-->
-        <el-text class="mx-2" size="large" style="text-align: center;" tag="b">欢迎，{{userInfo.user_name}}</el-text>
-        <div style="margin-bottom: 10px;"></div>
-        <el-dropdown-item @click="UserInfoVisible = true">
-          <el-icon style="margin-left:15px"><User /></el-icon>
-          <span style="margin-left:8px; margin-right: 100px">个人中心</span>
-          <el-icon><ArrowRight /></el-icon>
-        </el-dropdown-item>
-        <el-dropdown-item @click="CheckCollectInfo">
-          <el-icon style="margin-left:15px"><Star /></el-icon>
-          <span style="margin-left:8px; margin-right: 100px">收藏商品</span>
-          <el-icon><ArrowRight /></el-icon>
-        </el-dropdown-item>
-        <el-dropdown-item>
-          <el-icon style="margin-left:15px"><SwitchButton /></el-icon>
-          <a href="/" style="margin-left:8px; margin-right: 100px">退出登录</a>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </template>
+  <template #dropdown>
+    <el-dropdown-menu>
+      <!--TODO 具体逻辑-->
+      <el-text class="mx-2" size="large" style="text-align: center;" tag="b">欢迎，{{userInfo.user_name}}</el-text>
+      <div style="margin-bottom: 10px;"></div>
+      <el-dropdown-item @click="UserInfoVisible = true">
+        <el-icon style="margin-left:15px"><User /></el-icon>
+        <span style="margin-left:8px; margin-right: 100px">个人中心</span>
+        <el-icon><ArrowRight /></el-icon>
+      </el-dropdown-item>
+      <el-dropdown-item @click="CheckCollectInfo">
+        <el-icon style="margin-left:15px"><Star /></el-icon>
+        <span style="margin-left:8px; margin-right: 100px">收藏商品</span>
+        <el-icon><ArrowRight /></el-icon>
+      </el-dropdown-item>
+      <el-dropdown-item>
+        <el-icon style="margin-left:15px"><SwitchButton /></el-icon>
+        <a href="/" style="margin-left:8px; margin-right: 100px">退出登录</a>
+      </el-dropdown-item>
+    </el-dropdown-menu>
+  </template>
   </el-dropdown>
   <el-dialog v-model="UserInfoVisible" width = "30%" align-center :show-close="false">
     <div style="font-size: 25px; font-weight: bold; color: #181818">用户ID： {{userInfo.user_id}}</div>
@@ -95,53 +95,53 @@ const collectProducts = ref([
   </el-dialog>
   <el-dialog v-model="CollectInfoVisible" width = "1000" :show-close="false">
     <div style="font-size: 25px; font-weight: bold; color: #181818">收藏商品</div>
-    <div v-for="product in collectProducts" :key="product.product_id" >
-      <div v-if="product.collectFlag === true" class="product_item">
-        <div style="flex: 1;">
-          <img :src="product.photo_url"  style="width: 60%; height: auto;" />
-        </div>
-        <div style="flex: 3; padding-left: 10px;">
-          <p style="text-align: left;">
-            <el-link href="./detail" style="color: #181818;font-size:larger" >{{ product.product_name }}</el-link>
-          </p>
+      <div v-for="product in collectProducts" :key="product.product_id" >
+        <div v-if="product.collectFlag === true" class="product_item">
+          <div style="flex: 1;">
+            <img :src="product.photo_url"  style="width: 60%; height: auto;" />
+          </div>
+          <div style="flex: 3; padding-left: 10px;">
+            <p style="text-align: left;">
+              <el-link href="./detail" style="color: #181818;font-size:larger" >{{ product.product_name }}</el-link>
+            </p>
 
-          <div style="display:flex; justify-content: start;text-align: left;font-size: smaller; margin-top:10px">
-            <div style="flex: 1;">
+            <div style="display:flex; justify-content: start;text-align: left;font-size: smaller; margin-top:10px">
+              <div style="flex: 1;">
               <span style="text-align: left;color:#e23a3a;font-size: 20px; margin-right:20px">
                 ￥{{product.price}}
               </span>
-              <img
-                  v-if="product.platform === 'JD'"
-                  src="../assets/JD.png"
-                  style="width: 2%; margin-right: 8px"
-                  alt="其他平台："
-              />
-              <img
-                  v-if="product.platform === 'TB'"
-                  src="../assets/TB.png"
-                  style="width: 2%; margin-right: 8px"
-                  alt="其他平台："
-              />
-              <span style="color: #666666; font-size: 13px">{{product.shop}}</span>
+                <img
+                    v-if="product.platform === 'JD'"
+                    src="../assets/JD.png"
+                    style="width: 2%; margin-right: 8px"
+                    alt="其他平台："
+                />
+                <img
+                    v-if="product.platform === 'TB'"
+                    src="../assets/TB.png"
+                    style="width: 2%; margin-right: 8px"
+                    alt="其他平台："
+                />
+                <span style="color: #666666; font-size: 13px">{{product.shop}}</span>
+              </div>
+              <el-button v-if="product.lowReminderFlag === false" type="primary" plain style="display:flex; justify-content: flex-end; margin-left: auto"
+                         @click="()=>{product.lowReminderFlag=true}">
+                降价提醒
+              </el-button>
+              <el-button v-if="product.lowReminderFlag" type="primary" plain style="display:flex; justify-content: flex-end; margin-left: 10px"
+                         @click="()=>{product.lowReminderFlag=false}">
+                取消提醒
+              </el-button>
+              <el-button v-if="product.collectFlag" type="warning" plain style="display:flex; justify-content: flex-end; margin-left: 10px"
+                         @click="()=>{product.collectFlag=false}">
+                取消收藏
+              </el-button>
+              <el-button type="danger" plain style="display:flex; justify-content: flex-end; margin-left: 10px">
+                <a class="custom-link" v-bind:href="product.product_url">去看看</a>
+              </el-button>
             </div>
-            <el-button v-if="product.lowReminderFlag === false" type="primary" plain style="display:flex; justify-content: flex-end; margin-left: auto"
-                       @click="()=>{product.lowReminderFlag=true}">
-              降价提醒
-            </el-button>
-            <el-button v-if="product.lowReminderFlag" type="primary" plain style="display:flex; justify-content: flex-end; margin-left: 10px"
-                       @click="()=>{product.lowReminderFlag=false}">
-              取消提醒
-            </el-button>
-            <el-button v-if="product.collectFlag" type="warning" plain style="display:flex; justify-content: flex-end; margin-left: 10px"
-                       @click="()=>{product.collectFlag=false}">
-              取消收藏
-            </el-button>
-            <el-button type="danger" plain style="display:flex; justify-content: flex-end; margin-left: 10px">
-              <a class="custom-link" v-bind:href="product.product_url">去看看</a>
-            </el-button>
           </div>
         </div>
-      </div>
     </div>
     <template #footer>
       <el-button type="primary" @click="CollectInfoVisible=false">

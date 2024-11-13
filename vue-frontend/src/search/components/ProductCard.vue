@@ -33,9 +33,9 @@ const iconSrc = computed(() => {
     />
     <p></p>
     <div>
-      <span style="font-size:25px">{{data.price}}￥</span>
-      <el-button type="danger" size="large" style="margin-left:40px;">
-        商品详情
+      <span style="font-size:25px;color: #e23a3a;">￥{{data.price}}</span>
+      <el-button type="danger" size="default" style="margin-left:30px;margin-bottom: 5px">
+        <a href="./detail">商品详情</a>
       </el-button>
     </div>
     <template #footer>
@@ -54,5 +54,15 @@ const iconSrc = computed(() => {
 </template>
 
 <style scoped>
+a {
+  text-decoration: none;
+  color: white; /* 替换为你希望的颜色 */
+}
 
+/* 移除悬停、点击和访问过状态下的下划线 */
+a:hover,
+a:active,
+a:visited {
+  text-decoration: none;
+}
 </style>
