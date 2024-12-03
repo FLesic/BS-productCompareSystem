@@ -169,11 +169,18 @@ const fetchUserInfo = () => {
   axios.get('/user/query/', {
     params: {userID: userInfo.value.user_id}
   }).then(response => {
-    userInfo.value.user_name = response.data.account;
-    userInfo.value.email = response.data.email;
-    userInfo.value.phone = response.data.phone_number;
-    userInfo.value.password = response.data.password;
+    let Response = response.data;
+    if(Response.success){
+      userInfo.value.user_name = Response.data.name;
+      userInfo.value.email = Response.data.email;
+      userInfo.value.phone = Response.data.phone;
+      userInfo.value.password = Response.data.password;
+    }else{
+      // 处理后端返回的错误
+      ElMessage.error(Response.errorMsg);
+    }
   }).catch(error => {
+    // 处理请求错误，如网络错误或服务器错误
     ElMessage.error(error.response.data.error);
   })
 }
@@ -204,16 +211,16 @@ const collectProducts = ref([
   },
 ])
 const userInfo = ref({
-  user_id: 2,
-  user_name: "任飞扬",
-  email: "876320233@qq.com",
-  phone: "18962391106",
-  password: "123456"
+  user_id: 0,
+  user_name: "",
+  email: "",
+  phone: "",
+  password: ""
 })
 const newUserInfo = ref({
-  user_name: "任飞扬",
-  email: "876320233@qq.com",
-  phone: "18962391106",
+  user_name: "",
+  email: "",
+  phone: "",
   oldPassword: "",
   newPassword: "",
 })
@@ -240,18 +247,24 @@ const handleUpdateUserInfo = () => {
   formRef.value.validate((valid) => {
     if (valid) {
       axios.post('/user/update/', {
-        user_id: userInfo.value.user_id,
-        account: user_name,
+        id: userInfo.value.user_id,
+        name: user_name,
         email: email,
-        phone_number: phone,
+        phone: phone,
         password: newPassword,
       }).then(response => {
-        ElMessage.success("编辑成功");
-        userInfo.value.user_name = user_name;
-        userInfo.value.email = email;
-        userInfo.value.phone = phone;
-        userInfo.value.password = newPassword;
-        UserInfoUpdateVisible.value = false
+        let Response = response.data;
+        if(Response.success){
+          ElMessage.success("编辑成功");
+          userInfo.value.user_name = user_name;
+          userInfo.value.email = email;
+          userInfo.value.phone = phone;
+          userInfo.value.password = newPassword;
+          UserInfoUpdateVisible.value = false
+        }
+        else {
+          ElMessage.error(Response.errorMsg);
+        }
       }).catch(error => {
         ElMessage.error(error.response.data.error);
       })

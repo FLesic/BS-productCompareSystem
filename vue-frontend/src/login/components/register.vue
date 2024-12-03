@@ -100,15 +100,24 @@ const handleRegister = (param) => {
   formRef.value.validate((valid) => {
     if (valid) {
       axios.post('/user/register/',{
-        user_name: user_name,
+        name: user_name,
         email: email,
         phone: phone,
         password: password,
       }).then(response => {
-        ElMessage.success("注册成功");
-        clearRegisterForm();
-        store.dispatch('setUserID', response.data.id);
-        window.location.href = "/mapping";  // 函数内部进行超链接跳转
+        let Response = response.data;
+        if(Response.success){
+          ElMessage.success("注册成功");
+          clearRegisterForm();
+          store.dispatch('setUserID', Response.data);
+          window.location.href = "/search";  // 函数内部进行超链接跳转
+        }
+        else {
+          //
+          ElMessage.error(Response.errorMsg);
+          registerForm.value.password = "";
+          registerForm.value.confirmPassword = "";
+        }
       }).catch(error => {
         ElMessage.error(error.response.data.error);
         registerForm.value.password = "";

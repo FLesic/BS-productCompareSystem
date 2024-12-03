@@ -52,13 +52,21 @@ const handleLogin = () => {
   formRef.value.validate((valid) => {
     if (valid) {
       axios.post('/user/login/', {
-        account: user_nameOrEmail,
+        user_nameOrEmail: user_nameOrEmail,
         password: password,
       }).then(response => {
-        ElMessage.success("登录成功");
-        clearLoginForm();
-        store.dispatch('setUserID', response.data.id); // 修改当前用户
-        window.location.href = "/mapping";  // 函数内部进行超链接跳转
+        let Response = response.data;
+        if(Response.success){
+          ElMessage.success("登录成功");
+          clearLoginForm();
+          store.dispatch('setUserID', Response.data); // 修改当前用户
+          window.location.href = "/search";  // 函数内部进行超链接跳转
+        }
+        else {
+          // 用户名邮箱不存在或者密码错误
+          ElMessage.error(Response.errorMsg);
+          loginForm.value.password = '';
+        }
       }).catch(error => {
         ElMessage.error(error.response.data.error);
         loginForm.value.password = '';
