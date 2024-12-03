@@ -20,9 +20,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
+import {ref} from 'vue';
+import {useRouter} from 'vue-router';
+import {ElMessage} from 'element-plus';
+import axios from "axios";
+import {useStore} from "vuex";
+
+const store = useStore();
 
 const formRef = ref(null);
 const loginForm = ref({
@@ -32,22 +36,33 @@ const loginForm = ref({
 
 const rules = {
   user_nameOrEmail: [
-    { required: true, message: '请输入邮箱', trigger: 'blur' },
+    {required: true, message: '请输入邮箱', trigger: 'blur'},
   ],
-  password: [{ required: true, message: '请输入密码 ',trigger: 'blur' }]
+  password: [{required: true, message: '请输入密码 ', trigger: 'blur'}]
 };
 
 const router = useRouter();
-
+const clearLoginForm = () => {
+  loginForm.value.user_nameOrEmail = '';
+  loginForm.value.password = '';
+}
 const handleLogin = () => {
-  const { user_nameOrEmail, password } = loginForm.value;
+  const {user_nameOrEmail, password} = loginForm.value;
   console.log('邮箱/用户名：', user_nameOrEmail, '密码：', password);
   formRef.value.validate((valid) => {
     if (valid) {
-      // 表单验证通过，执行提交操作
-      // TODO 提交到后端账户数据
-      ElMessage.success("登录成功")
-      console.log('success');
+      axios.post('/user/login/', {
+        account: user_nameOrEmail,
+        password: password,
+      }).then(response => {
+        ElMessage.success("登录成功");
+        clearLoginForm();
+        store.dispatch('setUserID', response.data.id); // 修改当前用户
+        window.location.href = "/mapping";  // 函数内部进行超链接跳转
+      }).catch(error => {
+        ElMessage.error(error.response.data.error);
+        loginForm.value.password = '';
+      })
     } else {
       // 表单验证失败，阻止提交
       console.log('error');

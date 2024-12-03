@@ -24,6 +24,16 @@ const productsData = {
       product_url:"https://item.jd.com/100108593346.html#crumb-wrap",
       detail:"none"
     },
+    {
+      product_id:2,
+      product_name:"科尔沁 手撕风干牛肉干 原味618g量贩装 健身代餐高蛋白解馋休闲零食",
+      price:199.0,
+      platform:"京东",
+      shop:"科尔钦京东自营店",
+      photo_url:"https://img14.360buyimg.com/n0/jfs/t1/161423/27/49783/117759/6732eefcFd217e8dc/df11b028d4a11365.jpg.avif",
+      product_url:"https://item.jd.com/100108593346.html#crumb-wrap",
+      detail:"none"
+    },
   ],
   'TB': [
     {

@@ -50,7 +50,6 @@ const iconSrc = computed(() => {
 </script>
 
 <template>
-    <div class="common-layout">
       <el-container>
         <el-header style="display: flex; justify-content: space-between; align-items: center;height: 300px">
           <!-- 左侧内容 -->
@@ -110,7 +109,6 @@ const iconSrc = computed(() => {
           <ProductInDifPlat></ProductInDifPlat>
         </el-main>
       </el-container>
-    </div>
 </template>
 
 <style scoped>

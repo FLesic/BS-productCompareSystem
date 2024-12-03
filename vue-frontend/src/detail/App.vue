@@ -1,23 +1,25 @@
 <script setup>
 import {ref} from "vue";
-import UserInfo from "@/detail/components/UserInfo.vue";
+import UserInfo from "@/search/components/UserInfo.vue";
 import ProductDetail from "@/detail/components/ProductDetail.vue";
 </script>
 
 <template>
+
   <div class="common-layout">
-    <el-container>
+    <el-container >
       <!-- 自定义样式的头部 -->
       <el-header height=100px class = "common-header">
         <h2 class = "cool-font" data-shadow='PriceCompare'>PriceCompare</h2>
         <UserInfo></UserInfo>
       </el-header>
       <!-- 主要内容区域 -->
-      <el-main class="main-content" style="overflow: hidden;">
+      <el-main class="main-content">
         <ProductDetail></ProductDetail>
       </el-main>
     </el-container>
   </div>
+
 </template>
 
 <style>
@@ -38,7 +40,7 @@ import ProductDetail from "@/detail/components/ProductDetail.vue";
 }
 
 .main-content {
-  flex: 1; /* 主要内容区域占据剩余空间 */
+  //flex: 1; /* 主要内容区域占据剩余空间 */
   //padding: 20px;
 }
 
