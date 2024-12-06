@@ -7,28 +7,28 @@ import jakarta.persistence.*;
 public class Product {
     @Id
     @Column(name = "product_id")
-    String id;
+    private String id;
 
     @Column(name = "product_name")
-    String name;
+    private String name;
 
     @Column(name = "price")
-    double price;
+    private double price;
 
     @Column(name = "platform")
-    String platform;
+    private String platform;
 
     @Column(name = "shop")
-    String shop;
+    private String shop;
 
     @Column(name = "photo_url")
-    String photoURL;
+    private String photoURL;
 
     @Column(name = "detail")
-    String detail;
+    private String detail;
 
     @Column(name = "product_url")
-    String productURL;
+    private String productURL;
 
     public String getId() {
         return id;

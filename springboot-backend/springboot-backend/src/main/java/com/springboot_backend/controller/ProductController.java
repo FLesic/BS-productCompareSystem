@@ -1,21 +1,23 @@
 package com.springboot_backend.controller;
 
 import com.springboot_backend.Response;
+import com.springboot_backend.dao.Collect;
 import com.springboot_backend.dao.Product;
 import com.springboot_backend.dao.User;
+import com.springboot_backend.service.CollectService;
 import com.springboot_backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ProductController {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private CollectService collectService;
 
     @GetMapping("/product/search/")
     public Response<List<Product>> productSearchByName(@RequestParam("product_name") String product_name){
@@ -50,6 +52,49 @@ public class ProductController {
             List<Product> productListByName = productService.searchProductByFuzzName(product.getName());
             return Response.newSuccess(productListByName);
         } catch(Exception e){
+            return Response.newFail(e.getMessage());
+        }
+    }
+
+    @PostMapping("/product/collect/")
+    public Response<Integer> productCollect(@RequestBody Map<String, String> collectData){
+        try {
+            int user_id = Integer.parseInt(collectData.get("user_id"));
+            String product_id = collectData.get("product_id");
+            return Response.newSuccess(collectService.addNewCollect(user_id, product_id));
+        } catch (Exception e){
+            return Response.newFail(e.getMessage());
+        }
+    }
+
+    @PostMapping("/product/cancel-collect/")
+    public Response<Integer> productCancelCollect(@RequestBody Map<String, String> collectData){
+        try {
+            int user_id = Integer.parseInt(collectData.get("user_id"));
+            String product_id = collectData.get("product_id");
+            return Response.newSuccess(collectService.deleteCollectByUserAndProduct(user_id, product_id));
+        } catch (Exception e){
+            return Response.newFail(e.getMessage());
+        }
+    }
+
+    @PostMapping("/product/update-collect/")
+    public Response<Integer> productUpdateCollect(@RequestBody Map<String, String> collectData){
+        try {
+            int user_id = Integer.parseInt(collectData.get("user_id"));
+            String product_id = collectData.get("product_id");
+            int isLowReminder = Integer.parseInt(collectData.get("isLowReminder"));
+            return Response.newSuccess(collectService.updateCollect(user_id, product_id, isLowReminder));
+        } catch (Exception e){
+            return Response.newFail(e.getMessage());
+        }
+    }
+
+    @GetMapping("/product/get-collect/")
+    public Response<List<Collect>> productGetCollect(@RequestParam("user_id") int user_id, @RequestParam("product_id") String product_id){
+        try {
+            return Response.newSuccess(collectService.getCollectByUserAndProduct(user_id, product_id));
+        } catch (Exception e){
             return Response.newFail(e.getMessage());
         }
     }

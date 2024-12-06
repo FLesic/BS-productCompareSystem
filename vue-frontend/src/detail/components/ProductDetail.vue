@@ -5,8 +5,11 @@ import TB from "@/search/assets/TB.png";
 import PriceHistory from "@/detail/components/PriceHistory.vue";
 import ProductInDifPlat from "@/detail/components/ProductInDifPlat.vue";
 import {useStore} from "vuex";
+import axios from "axios";
+import {ElMessage} from "element-plus";
 const store = useStore();
 const selectedProduct = ref(store.getters.selectProduct);
+const nowUser = ref(store.getters.userID);
 let iconSrc = computed(() => {
   const platform = selectedProduct.value?.platform;
   switch (platform) {
@@ -18,16 +21,6 @@ let iconSrc = computed(() => {
       return null;
   }
 });
-const testProduct = ref({
-  product_id:1,
-  product_name:"科尔沁 手撕风干牛肉干 原味618g量贩装 健身代餐高蛋白解馋休闲零食",
-  price:99.0,
-  platform:"京东",
-  shop:"科尔钦京东自营店",
-  photo_url:"https://img14.360buyimg.com/n0/jfs/t1/161423/27/49783/117759/6732eefcFd217e8dc/df11b028d4a11365.jpg.avif",
-  product_url:"https://item.jd.com/100108593346.html#crumb-wrap",
-  detail:"这牛肉干是真的好吃啊"
-});
 const historyPrice = ref([
   {
     data: String,
@@ -36,17 +29,98 @@ const historyPrice = ref([
 ])
 const collectFlag = ref(false);
 const lowPriceRemainder = ref(false);
+onMounted(()=>{
+  axios.get('/product/get-collect/',{
+    params:{user_id: nowUser.value, product_id:selectedProduct.value.id}
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      // 有收藏信息
+      if(Response.data.length > 0){
+        collectFlag.value = true;
+        lowPriceRemainder.value = (Response.data.isLowReminder === 1);
+      }
+      else {
+        collectFlag.value = false;
+        lowPriceRemainder.value = false;
+      }
+    }
+    else {
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    ElMessage.error(error.response.data.error);
+  })
+})
 const collectProduct = ()=>{
-  collectFlag.value = true;
+  axios.post('/product/collect/', {
+    user_id: nowUser.value,
+    product_id: selectedProduct.value.id,
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      ElMessage.success("收藏成功");
+      collectFlag.value = true;
+    }
+    else {
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    ElMessage.error(error.response.data.error);
+  })
 }
 const cancelCollectProduct = ()=>{
-  collectFlag.value = false;
+  axios.post('/product/cancel-collect/', {
+    user_id: nowUser.value,
+    product_id: selectedProduct.value.id,
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      ElMessage.success("取消收藏成功");
+      collectFlag.value = false;
+    }
+    else {
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    ElMessage.error(error.response.data.error);
+  })
 }
 const setLowReminder = ()=>{
-  lowPriceRemainder.value = true;
+  axios.post('/product/update-collect/', {
+    user_id: nowUser.value,
+    product_id: selectedProduct.value.id,
+    isLowReminder: 1,
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      ElMessage.success("降价提醒设置成功");
+      lowPriceRemainder.value = true;
+    }
+    else {
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    ElMessage.error(error.response.data.error);
+  })
 }
 const cancelSetLowReminder = ()=>{
-  lowPriceRemainder.value = false;
+  axios.post('/product/update-collect/', {
+    user_id: nowUser.value,
+    product_id: selectedProduct.value.id,
+    isLowReminder: 0,
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      ElMessage.success("降价提醒取消成功");
+      lowPriceRemainder.value = false;
+    }
+    else {
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    ElMessage.error(error.response.data.error);
+  })
 }
 
 </script>
