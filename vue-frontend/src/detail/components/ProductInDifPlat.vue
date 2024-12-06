@@ -1,54 +1,55 @@
 <script setup>
-import {ref} from "vue";
-import ProductCard from "@/search/components/ProductCard.vue";
+import {onMounted, ref} from "vue";
+import {useStore} from "vuex";
+import axios from "axios";
+import {ElMessage} from "element-plus";
 
-const productsData = {
+const productsData = ref({
   'JD': [
-    {
-      product_id:1,
-      product_name:"科尔沁 手撕风干牛肉干 原味618g量贩装 健身代餐高蛋白解馋休闲零食",
-      price:99.0,
-      platform:"京东",
-      shop:"科尔钦京东自营店",
-      photo_url:"https://img14.360buyimg.com/n0/jfs/t1/161423/27/49783/117759/6732eefcFd217e8dc/df11b028d4a11365.jpg.avif",
-      product_url:"https://item.jd.com/100108593346.html#crumb-wrap",
-      detail:"none"
-    },
-    {
-      product_id:2,
-      product_name:"科尔沁 手撕风干牛肉干 原味618g量贩装 健身代餐高蛋白解馋休闲零食",
-      price:199.0,
-      platform:"京东",
-      shop:"科尔钦京东自营店",
-      photo_url:"https://img14.360buyimg.com/n0/jfs/t1/161423/27/49783/117759/6732eefcFd217e8dc/df11b028d4a11365.jpg.avif",
-      product_url:"https://item.jd.com/100108593346.html#crumb-wrap",
-      detail:"none"
-    },
-    {
-      product_id:2,
-      product_name:"科尔沁 手撕风干牛肉干 原味618g量贩装 健身代餐高蛋白解馋休闲零食",
-      price:199.0,
-      platform:"京东",
-      shop:"科尔钦京东自营店",
-      photo_url:"https://img14.360buyimg.com/n0/jfs/t1/161423/27/49783/117759/6732eefcFd217e8dc/df11b028d4a11365.jpg.avif",
-      product_url:"https://item.jd.com/100108593346.html#crumb-wrap",
-      detail:"none"
-    },
   ],
   'TB': [
-    {
-      product_id:3,
-      product_name:"科尔沁 酱牛肉五香味618g 量贩装 0添加防腐剂 熟食菜肴速食解馋下酒菜",
-      price:119.0,
-      platform:"淘宝",
-      shop:"科尔钦京东自营店",
-      photo_url:"https://img14.360buyimg.com/n0/jfs/t1/175969/24/51540/102980/6732ecc1F269a7b39/c19695e86051e7c2.jpg.avif",
-      product_url:"https://item.jd.com/100122413511.html#crumb-wrap",
-      detail:"none"
-    },
   ],
-};
+});
 const currentPlatForm = ref('JD');
+const store = useStore();
+const selectProduct = ref(store.getters.selectProduct);
+const handleCheckDetail = (product)=>{
+  store.dispatch('setSelectProduct',product);
+  window.location.href = '/detail';
+}
+const pickProductToDif = (product)=> {
+  switch(product.platform)
+  {
+    case "京东":
+      productsData.value['JD'].push(product);
+      break;
+    case "淘宝":
+      productsData.value['TB'].push(product);
+      break;
+    default:
+      break;
+  }
+}
+onMounted(()=>{
+  axios.get('/product/compare-platform/', {
+    params: {product_id: selectProduct.value.id}
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      productsData.value['JD'] = [];
+      productsData.value['TB'] = [];
+      for(let i = 0; i < Response.data.length; i++){
+        pickProductToDif(Response.data[i]);
+      }
+    }else{
+      // 处理后端返回的错误
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    // 处理请求错误，如网络错误或服务器错误
+    ElMessage.error(error.response.data.error);
+  })
+})
 </script>
 
 <template>
@@ -65,14 +66,16 @@ const currentPlatForm = ref('JD');
       <el-menu-item index="1" @click="()=>{currentPlatForm = 'JD'}">京东</el-menu-item>
       <el-menu-item index="2" @click="()=>{currentPlatForm = 'TB'}">淘宝</el-menu-item>
     </el-menu>
-    <div v-for="product in productsData[currentPlatForm]" :key="product.product_id" >
+    <div v-for="product in productsData[currentPlatForm]" :key="product.id" >
       <div class="product_item">
         <div style="flex: 1;">
-          <img :src="product.photo_url"  style="width: 50%; height: auto;" />
+          <img :src="product.photoURL"  style="width: 50%; height: auto;" />
         </div>
         <div style="flex: 3; padding-left: 10px;">
           <p style="text-align: left;">
-            <el-link href="./detail" style="color: #181818;font-size:large" >{{ product.product_name }}</el-link>
+            <el-link style="color: #181818;font-size:large" @click="handleCheckDetail(product)">
+              {{ product.name }}
+            </el-link>
           </p>
 
           <div style="display:flex; justify-content: start;text-align: left;font-size: smaller; margin-top:50px">

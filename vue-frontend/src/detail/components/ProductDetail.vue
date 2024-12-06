@@ -1,11 +1,23 @@
 <script setup>
-// 用于测试使用
-import {computed, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import JD from "@/search/assets/JD.png";
 import TB from "@/search/assets/TB.png";
 import PriceHistory from "@/detail/components/PriceHistory.vue";
 import ProductInDifPlat from "@/detail/components/ProductInDifPlat.vue";
-
+import {useStore} from "vuex";
+const store = useStore();
+const selectedProduct = ref(store.getters.selectProduct);
+let iconSrc = computed(() => {
+  const platform = selectedProduct.value?.platform;
+  switch (platform) {
+    case '京东':
+      return JD;
+    case '淘宝':
+      return TB;
+    default:
+      return null;
+  }
+});
 const testProduct = ref({
   product_id:1,
   product_name:"科尔沁 手撕风干牛肉干 原味618g量贩装 健身代餐高蛋白解馋休闲零食",
@@ -36,17 +48,7 @@ const setLowReminder = ()=>{
 const cancelSetLowReminder = ()=>{
   lowPriceRemainder.value = false;
 }
-const iconSrc = computed(() => {
-  const platform = testProduct.value.platform;
-  switch (platform) {
-    case '京东':
-      return JD;
-    case '淘宝':
-      return TB;
-    default:
-      return null;
-  }
-})
+
 </script>
 
 <template>
@@ -56,7 +58,7 @@ const iconSrc = computed(() => {
           <el-card style="max-width: 600px; max-height: 600px;">
             <div style="flex: 1; display: flex; align-items: center;">
                 <div style="flex: 2;">
-                  <img :src="testProduct.photo_url" alt="Example Image" style="width: 100%; height: auto;" />
+                  <img :src="selectedProduct.photoURL" alt="Example Image" style="width: 100%; height: auto;" />
                 </div>
                 <!-- 右侧部分：详细信息 -->
                 <div style="flex: 2; padding-left: 10px;">
@@ -66,14 +68,14 @@ const iconSrc = computed(() => {
                         style="width: 6%; margin-right: 8px"
                         alt="其他平台："
                     />
-                    {{ testProduct.product_name }}
+                    {{ selectedProduct.name }}
                   </p>
                   <p style="text-align: left;font-size: smaller; background-color: #f6f6f6;">
                     <span style="color: #999999">店铺来源：</span>
-                    <span style="color: #666666">{{testProduct.shop}}</span>
+                    <span style="color: #666666">{{selectedProduct.shop}}</span>
                   </p>
                   <p style="text-align: left;color:#e23a3a;font-size: 25px">
-                    ￥{{testProduct.price}}
+                    ￥{{selectedProduct.price}}
                     <el-button v-if="!collectFlag" type="warning" style="margin-top: 10px; margin-bottom: 10px"
                                @click="collectProduct">
                       收藏商品
@@ -91,10 +93,10 @@ const iconSrc = computed(() => {
                       取消收藏
                     </el-button>
                   </p>
-                  <p style="text-align: left;font-size: smaller;">详细信息：{{testProduct.detail}}</p>
+                  <p style="text-align: left;font-size: smaller;">详细信息：{{selectedProduct.detail}}</p>
                   <el-divider></el-divider>
                   <el-button type="danger" style="margin-top: 10px;">
-                    <a v-bind:href="testProduct.product_url">去看看</a>
+                    <a v-bind:href="selectedProduct.productURL">去看看</a>
                   </el-button>
 
                 </div>

@@ -3,8 +3,41 @@ import UserInfo from "@/search/components/UserInfo.vue";
 import {Search} from "@element-plus/icons-vue";
 import SearchOutput from "@/search/components/SearchOutput.vue";
 import {ref} from "vue";
+import axios from "axios";
+import {ElMessage} from "element-plus";
+import {useStore} from "vuex";
 
-const product_name = ref(null);
+const userInput = ref(null);
+let queryProductList = []
+let productElement = {
+  product_id:0,
+  product_name:"",
+  price:0,
+  platform:"",
+  shop:"",
+  photo_url:"",
+  product_url:"",
+  detail:""
+}
+const store = useStore()
+const handleProductSearch = ()=>{
+  axios.get('/product/search/', {
+    params: {product_name: userInput.value},
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      queryProductList = []
+      queryProductList = Response.data;
+      store.dispatch('setProductList', queryProductList);
+    }else{
+      // 处理后端返回的错误
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    // 处理请求错误，如网络错误或服务器错误
+    ElMessage.error(error.response.data.error);
+  })
+}
 </script>
 
 <template>
@@ -15,9 +48,9 @@ const product_name = ref(null);
         <h2 class = "cool-font" data-shadow='PriceCompare'>PriceCompare</h2>
         <UserInfo></UserInfo>
         <div></div>
-        <el-input v-model="product_name" style="max-width: 50vw" placeholder="请输入商品">
+        <el-input v-model="userInput" style="max-width: 50vw" placeholder="请输入商品">
           <template #append>
-            <el-button :icon="Search"/>
+            <el-button :icon="Search" @click="handleProductSearch"/>
           </template>
         </el-input>
       </el-header>
