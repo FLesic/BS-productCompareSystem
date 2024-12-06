@@ -17,7 +17,7 @@
             <ArrowRight/>
           </el-icon>
         </el-dropdown-item>
-        <el-dropdown-item @click="CollectInfoVisible = true">
+        <el-dropdown-item @click="openCollectInfo">
           <el-icon style="margin-left:15px"><Star /></el-icon>
           <span style="margin-left:8px; margin-right: 100px">收藏商品</span>
           <el-icon><ArrowRight /></el-icon>
@@ -90,14 +90,14 @@
   </el-dialog>
   <el-dialog v-model="CollectInfoVisible" width = "1000" :show-close="false">
     <div style="font-size: 25px; font-weight: bold; color: #181818">收藏商品</div>
-    <div v-for="product in collectProducts" :key="product.product_id" >
-      <div v-if="product.collectFlag === true" class="product_item">
+    <div v-for="product in collectProducts" :key="product.count" >
+      <div v-if="product.collectFlag === 1" class="product_item">
         <div style="flex: 1;">
-          <img :src="product.photo_url"  style="width: 60%; height: auto;" />
+          <img :src="product.photoURL"  style="width: 60%; height: auto;" />
         </div>
         <div style="flex: 3; padding-left: 10px;">
           <p style="text-align: left;">
-            <el-link href="./detail" style="color: #181818;font-size:larger" >{{ product.product_name }}</el-link>
+            <el-link href="./detail" style="color: #181818;font-size:larger" >{{ product.name }}</el-link>
           </p>
 
           <div style="display:flex; justify-content: start;text-align: left;font-size: smaller; margin-top:10px">
@@ -106,33 +106,33 @@
                 ￥{{product.price}}
               </span>
               <img
-                  v-if="product.platform === 'JD'"
+                  v-if="product.platform === '京东'"
                   src="../assets/JD.png"
-                  style="width: 2%; margin-right: 8px"
+                  style="width: 3.5%; margin-right: 8px"
                   alt="其他平台："
               />
               <img
-                  v-if="product.platform === 'TB'"
+                  v-if="product.platform === '淘宝'"
                   src="../assets/TB.png"
-                  style="width: 2%; margin-right: 8px"
+                  style="width: 3.5%; margin-right: 8px"
                   alt="其他平台："
               />
               <span style="color: #666666; font-size: 13px">{{product.shop}}</span>
             </div>
-            <el-button v-if="product.lowReminderFlag === false" type="primary" plain style="display:flex; justify-content: flex-end; margin-left: auto"
-                       @click="()=>{product.lowReminderFlag=true}">
+            <el-button v-if="product.lowReminderFlag === 0" type="primary" plain style="display:flex; justify-content: flex-end; margin-left: auto"
+                       @click="setLowReminder(product.count)">
               降价提醒
             </el-button>
-            <el-button v-if="product.lowReminderFlag" type="primary" plain style="display:flex; justify-content: flex-end; margin-left: 10px"
-                       @click="()=>{product.lowReminderFlag=false}">
+            <el-button v-if="product.lowReminderFlag === 1" type="primary" plain style="display:flex; justify-content: flex-end; margin-left: 10px"
+                       @click="cancelSetLowReminder(product.count)">
               取消提醒
             </el-button>
-            <el-button v-if="product.collectFlag" type="warning" plain style="display:flex; justify-content: flex-end; margin-left: 10px"
-                       @click="()=>{product.collectFlag=false}">
+            <el-button v-if="product.collectFlag === 1" type="warning" plain style="display:flex; justify-content: flex-end; margin-left: 10px"
+                       @click="cancelCollectProduct(product.count)">
               取消收藏
             </el-button>
             <el-button type="danger" plain style="display:flex; justify-content: flex-end; margin-left: 10px">
-              <a class="custom-link" v-bind:href="product.product_url">去看看</a>
+              <a class="custom-link" v-bind:href="product.productURL">去看看</a>
             </el-button>
           </div>
         </div>
@@ -164,6 +164,9 @@ const initializeFun = () => {
 
   // 获取用户初始信息并存储
   fetchUserInfo();
+
+  // 获取用户所有收藏信息
+  fetchUserCollectInfo();
 }
 const fetchUserInfo = () => {
   axios.get('/user/query/', {
@@ -184,32 +187,28 @@ const fetchUserInfo = () => {
     ElMessage.error(error.response.data.error);
   })
 }
-const collectProducts = ref([
-  {
-    product_id:1,
-    product_name:"科尔沁 手撕风干牛肉干 原味618g量贩装 健身代餐高蛋白解馋休闲零食",
-    price:99.0,
-    platform:"京东",
-    shop:"科尔钦京东自营店",
-    photo_url:"https://img14.360buyimg.com/n0/jfs/t1/161423/27/49783/117759/6732eefcFd217e8dc/df11b028d4a11365.jpg.avif",
-    product_url:"https://item.jd.com/100108593346.html#crumb-wrap",
-    detail:"none",
-    collectFlag:true,
-    lowReminderFlag:true,
-  },
-  {
-    product_id:3,
-    product_name:"科尔沁 酱牛肉五香味618g 量贩装 0添加防腐剂 熟食菜肴速食解馋下酒菜",
-    price:119.0,
-    platform:"淘宝",
-    shop:"科尔钦京东自营店",
-    photo_url:"https://img14.360buyimg.com/n0/jfs/t1/175969/24/51540/102980/6732ecc1F269a7b39/c19695e86051e7c2.jpg.avif",
-    product_url:"https://item.jd.com/100122413511.html#crumb-wrap",
-    detail:"none",
-    collectFlag:true,
-    lowReminderFlag:false,
-  },
-])
+const fetchUserCollectInfo = () =>{
+  axios.get('/collect/getAll/', {
+    params: {user_id: userInfo.value.user_id}
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      collectProducts.value = Response.data;
+    }
+    else{
+      // 处理后端返回的错误
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    // 处理请求错误，如网络错误或服务器错误
+    ElMessage.error(error.response.data.error);
+  })
+}
+const openCollectInfo = ()=>{
+  CollectInfoVisible.value = true;
+  fetchUserCollectInfo();
+}
+const collectProducts = ref([])
 const userInfo = ref({
   user_id: 0,
   user_name: "",
@@ -274,6 +273,62 @@ const handleUpdateUserInfo = () => {
     }
   });
 }
+const cancelCollectProduct = (count)=>{
+  axios.post('/collect/cancel/', {
+    user_id: userInfo.value.user_id,
+    product_id: collectProducts.value[count].id,
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      ElMessage.success("取消收藏成功");
+      collectProducts.value[count].collectFlag= 0;
+      notifyProductDetail(); // 告诉ProductDetail组件可能发生数据更新
+    }
+    else {
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    ElMessage.error(error.response.data.error);
+  })
+}
+const setLowReminder = (count)=>{
+  axios.post('/collect/update/', {
+    user_id: userInfo.value.user_id,
+    product_id: collectProducts.value[count].id,
+    isLowReminder: 1,
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      ElMessage.success("降价提醒设置成功");
+      collectProducts.value[count].lowReminderFlag= 1;
+      notifyProductDetail(); // 告诉ProductDetail组件可能发生数据更新
+    }
+    else {
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    ElMessage.error(error.response.data.error);
+  })
+}
+const cancelSetLowReminder = (count)=>{
+  axios.post('/collect/update/', {
+    user_id: userInfo.value.user_id,
+    product_id: collectProducts.value[count].id,
+    isLowReminder: 0,
+  }).then(response => {
+    let Response = response.data;
+    if(Response.success){
+      ElMessage.success("降价提醒取消成功");
+      collectProducts.value[count].lowReminderFlag= 0;
+      notifyProductDetail(); // 告诉ProductDetail组件可能发生数据更新
+    }
+    else {
+      ElMessage.error(Response.errorMsg);
+    }
+  }).catch(error => {
+    ElMessage.error(error.response.data.error);
+  })
+}
 const rules = {
   user_name: [
     {required: true, message: '请输入用户名', trigger: 'blur'},
@@ -325,7 +380,10 @@ const rules = {
     },
   ],
 };
-
+import bus from '../../eventbus/event.js';
+const notifyProductDetail = () => {
+  bus.emit('collect-info-update');
+};
 </script>
 
 <style scoped>

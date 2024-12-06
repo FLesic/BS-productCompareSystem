@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import JD from "@/search/assets/JD.png";
 import TB from "@/search/assets/TB.png";
 import PriceHistory from "@/detail/components/PriceHistory.vue";
@@ -10,6 +10,7 @@ import {ElMessage} from "element-plus";
 const store = useStore();
 const selectedProduct = ref(store.getters.selectProduct);
 const nowUser = ref(store.getters.userID);
+import bus from '../../eventbus/event.js';
 let iconSrc = computed(() => {
   const platform = selectedProduct.value?.platform;
   switch (platform) {
@@ -29,8 +30,9 @@ const historyPrice = ref([
 ])
 const collectFlag = ref(false);
 const lowPriceRemainder = ref(false);
-onMounted(()=>{
-  axios.get('/product/get-collect/',{
+const getCollectInfo = ()=>{
+  console.log("触发一次")
+  axios.get('/collect/get/',{
     params:{user_id: nowUser.value, product_id:selectedProduct.value.id}
   }).then(response => {
     let Response = response.data;
@@ -38,7 +40,7 @@ onMounted(()=>{
       // 有收藏信息
       if(Response.data.length > 0){
         collectFlag.value = true;
-        lowPriceRemainder.value = (Response.data.isLowReminder === 1);
+        lowPriceRemainder.value = (Response.data[0].isLowReminder === 1);
       }
       else {
         collectFlag.value = false;
@@ -51,9 +53,16 @@ onMounted(()=>{
   }).catch(error => {
     ElMessage.error(error.response.data.error);
   })
+}
+onMounted(()=>{
+  getCollectInfo();
+  bus.on('collect-info-update', getCollectInfo);
 })
+onUnmounted(() => {
+  bus.off('collect-info-update', getCollectInfo);
+});
 const collectProduct = ()=>{
-  axios.post('/product/collect/', {
+  axios.post('/collect/set/', {
     user_id: nowUser.value,
     product_id: selectedProduct.value.id,
   }).then(response => {
@@ -70,7 +79,7 @@ const collectProduct = ()=>{
   })
 }
 const cancelCollectProduct = ()=>{
-  axios.post('/product/cancel-collect/', {
+  axios.post('/collect/cancel/', {
     user_id: nowUser.value,
     product_id: selectedProduct.value.id,
   }).then(response => {
@@ -87,7 +96,7 @@ const cancelCollectProduct = ()=>{
   })
 }
 const setLowReminder = ()=>{
-  axios.post('/product/update-collect/', {
+  axios.post('/collect/update/', {
     user_id: nowUser.value,
     product_id: selectedProduct.value.id,
     isLowReminder: 1,
@@ -105,7 +114,7 @@ const setLowReminder = ()=>{
   })
 }
 const cancelSetLowReminder = ()=>{
-  axios.post('/product/update-collect/', {
+  axios.post('/collect/update/', {
     user_id: nowUser.value,
     product_id: selectedProduct.value.id,
     isLowReminder: 0,

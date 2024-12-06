@@ -56,46 +56,5 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/product/collect/")
-    public Response<Integer> productCollect(@RequestBody Map<String, String> collectData){
-        try {
-            int user_id = Integer.parseInt(collectData.get("user_id"));
-            String product_id = collectData.get("product_id");
-            return Response.newSuccess(collectService.addNewCollect(user_id, product_id));
-        } catch (Exception e){
-            return Response.newFail(e.getMessage());
-        }
-    }
 
-    @PostMapping("/product/cancel-collect/")
-    public Response<Integer> productCancelCollect(@RequestBody Map<String, String> collectData){
-        try {
-            int user_id = Integer.parseInt(collectData.get("user_id"));
-            String product_id = collectData.get("product_id");
-            return Response.newSuccess(collectService.deleteCollectByUserAndProduct(user_id, product_id));
-        } catch (Exception e){
-            return Response.newFail(e.getMessage());
-        }
-    }
-
-    @PostMapping("/product/update-collect/")
-    public Response<Integer> productUpdateCollect(@RequestBody Map<String, String> collectData){
-        try {
-            int user_id = Integer.parseInt(collectData.get("user_id"));
-            String product_id = collectData.get("product_id");
-            int isLowReminder = Integer.parseInt(collectData.get("isLowReminder"));
-            return Response.newSuccess(collectService.updateCollect(user_id, product_id, isLowReminder));
-        } catch (Exception e){
-            return Response.newFail(e.getMessage());
-        }
-    }
-
-    @GetMapping("/product/get-collect/")
-    public Response<List<Collect>> productGetCollect(@RequestParam("user_id") int user_id, @RequestParam("product_id") String product_id){
-        try {
-            return Response.newSuccess(collectService.getCollectByUserAndProduct(user_id, product_id));
-        } catch (Exception e){
-            return Response.newFail(e.getMessage());
-        }
-    }
 }
