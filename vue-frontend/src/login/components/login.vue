@@ -59,6 +59,7 @@ const handleLogin = () => {
         if(Response.success){
           ElMessage.success("登录成功");
           clearLoginForm();
+          store.dispatch('clearProductList');
           store.dispatch('setUserID', Response.data); // 修改当前用户
           window.location.href = "/search";  // 函数内部进行超链接跳转
         }

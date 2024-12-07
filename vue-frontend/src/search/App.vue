@@ -58,7 +58,7 @@ const handleProductSearch = ()=>{
       <el-main class="main-content">
         <SearchOutput></SearchOutput>
         <div></div>
-        <el-link href="/" type="primary"> 测试返回</el-link>
+<!--        <el-link href="/" type="primary"> 测试返回</el-link>-->
       </el-main>
     </el-container>
   </div>

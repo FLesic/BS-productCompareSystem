@@ -13,7 +13,7 @@ import {ShoppingCart} from "@element-plus/icons-vue";
       <el-main class="main-content">
         <!-- 路由视图，根据路由显示不同的组件 -->
         <router-view />
-        <el-link href="search" type="primary"> 测试跳转</el-link>
+<!--        <el-link href="search" type="primary"> 测试跳转</el-link>-->
       </el-main>
     </el-container>
   </div>

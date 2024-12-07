@@ -25,6 +25,23 @@ const store = createStore({
         },
         setSelectProduct(state, product) {
             state.selectProduct = product;
+        },
+        clearState(state) {
+            state.user_id = 0;
+            state.productList = [];
+            state.selectProduct = {
+                id: '',
+                name: '',
+                price: 0.0,
+                platform: '',
+                shop: '',
+                photoURL: '',
+                productURL: '',
+                detail: '',
+            };
+        },
+        clearProductList(state){
+            state.productList = [];
         }
     },
     actions: {
@@ -36,6 +53,12 @@ const store = createStore({
         },
         setSelectProduct({commit}, product) {
             commit('setSelectProduct', product);
+        },
+        clearState({commit}) {
+            commit('clearState');
+        },
+        clearProductList({commit}){
+            commit('clearProductList');
         }
     },
     getters: {
