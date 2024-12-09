@@ -1,7 +1,8 @@
 <script setup>
 import {computed, onMounted, onUnmounted, ref} from "vue";
 import JD from "@/search/assets/JD.png";
-import TB from "@/search/assets/TB.png";
+import DD from "@/search/assets/DD.png";
+import Amazon from "@/search/assets/Amazon.png"
 import PriceHistory from "@/detail/components/PriceHistory.vue";
 import ProductInDifPlat from "@/detail/components/ProductInDifPlat.vue";
 import {useStore} from "vuex";
@@ -16,8 +17,10 @@ let iconSrc = computed(() => {
   switch (platform) {
     case '京东':
       return JD;
-    case '淘宝':
-      return TB;
+    case '当当':
+      return DD;
+    case '亚马逊':
+      return Amazon;
     default:
       return null;
   }
@@ -141,7 +144,7 @@ const cancelSetLowReminder = ()=>{
           <el-card style="max-width: 600px; max-height: 600px;">
             <div style="flex: 1; display: flex; align-items: center;">
                 <div style="flex: 2;">
-                  <img :src="selectedProduct.photoURL" alt="Example Image" style="width: 100%; height: auto;" />
+                  <img :src="selectedProduct.photoURL" alt="Example Image" style="width: 80%; height: auto;" />
                 </div>
                 <!-- 右侧部分：详细信息 -->
                 <div style="flex: 2; padding-left: 10px;">

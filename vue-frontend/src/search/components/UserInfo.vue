@@ -93,7 +93,7 @@
     <div v-for="product in collectProducts" :key="product.count" >
       <div v-if="product.collectFlag === 1" class="product_item">
         <div style="flex: 1;">
-          <img :src="product.photoURL"  style="width: 60%; height: auto;" />
+          <img :src="product.photoURL"  class="product-image"/>
         </div>
         <div style="flex: 3; padding-left: 10px;">
           <p style="text-align: left;">
@@ -112,8 +112,14 @@
                   alt="其他平台："
               />
               <img
-                  v-if="product.platform === '淘宝'"
-                  src="../assets/TB.png"
+                  v-if="product.platform === '亚马逊'"
+                  src="../assets/Amazon.png"
+                  style="width: 3.5%; margin-right: 8px"
+                  alt="其他平台："
+              />
+              <img
+                  v-if="product.platform === '当当'"
+                  src="../assets/DD.png"
                   style="width: 3.5%; margin-right: 8px"
                   alt="其他平台："
               />
@@ -416,5 +422,10 @@ a:visited {
 
 .custom-link:hover {
   color: white;
+}
+.product-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
 }
 </style>

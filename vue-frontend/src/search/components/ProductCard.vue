@@ -1,7 +1,8 @@
 <script setup>
 import {computed, ref} from "vue";
 import JD from '../assets/JD.png'; // 使用 ES6 模块导入图片
-import TB from '../assets/TB.png';
+import Amazon from '../assets/Amazon.png';
+import DD from '../assets/DD.png';
 import axios from "axios";
 import {useStore} from "vuex";
 const props = defineProps({
@@ -12,8 +13,10 @@ const iconSrc = computed(() => {
   switch (platform) {
     case '京东':
       return JD;
-    case '淘宝':
-      return TB;
+    case '亚马逊':
+      return Amazon;
+    case '当当':
+      return DD;
     default:
       return null;
   }
@@ -26,7 +29,7 @@ const handleCheckDetail = () =>{
 </script>
 
 <template>
-  <el-card style="margin-left:20px; max-width: 250px">
+  <el-card style="margin-left:22px; margin-bottom:10px; max-width: 270px">
     <template #header>
       <div class="card-header">
         <el-text class="w-250px mb-2" truncated size="large" tag="b">
@@ -36,7 +39,7 @@ const handleCheckDetail = () =>{
     </template>
     <img
         :src="data.photoURL"
-        style="width: 100%;"
+        class="product-image"
     />
     <p></p>
     <div>
@@ -48,12 +51,12 @@ const handleCheckDetail = () =>{
     </div>
     <template #footer>
       <div style="text-align: left;">
-      <img
-          :src="iconSrc"
-          style="width: 9%; margin-right: 8px"
-          alt="其他平台："
-      />
       <el-text class="w-250px mb-2" truncated size="large">
+        <img
+            :src="iconSrc"
+            style="width: 7%; margin-right: 8px;"
+            alt="其他平台："
+        />
         {{data.shop}}
       </el-text>
       </div>
@@ -72,5 +75,10 @@ a:hover,
 a:active,
 a:visited {
   text-decoration: none;
+}
+.product-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
 }
 </style>

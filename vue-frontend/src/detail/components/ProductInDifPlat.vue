@@ -7,7 +7,10 @@ import {ElMessage} from "element-plus";
 const productsData = ref({
   'JD': [
   ],
-  'TB': [
+  'DD': [
+  ],
+  'Amazon': [
+
   ],
 });
 const currentPlatForm = ref('JD');
@@ -23,8 +26,11 @@ const pickProductToDif = (product)=> {
     case "京东":
       productsData.value['JD'].push(product);
       break;
-    case "淘宝":
-      productsData.value['TB'].push(product);
+    case "当当":
+      productsData.value['DD'].push(product);
+      break;
+    case "亚马逊":
+      productsData.value['Amazon'].push(product);
       break;
     default:
       break;
@@ -37,7 +43,8 @@ onMounted(()=>{
     let Response = response.data;
     if(Response.success){
       productsData.value['JD'] = [];
-      productsData.value['TB'] = [];
+      productsData.value['DD'] = [];
+      productsData.value['Amazon'] = [];
       for(let i = 0; i < Response.data.length; i++){
         pickProductToDif(Response.data[i]);
       }
@@ -65,11 +72,13 @@ onMounted(()=>{
       <el-text size="large" tag="b">不同平台比价：</el-text>
       <el-menu-item index="1" @click="()=>{currentPlatForm = 'JD'}">京东</el-menu-item>
       <el-menu-item index="2" @click="()=>{currentPlatForm = 'TB'}">淘宝</el-menu-item>
+      <el-menu-item index="3" @click="()=>{currentPlatForm = 'Amazon'}">亚马逊</el-menu-item>
+      <el-menu-item index="4" @click="()=>{currentPlatForm = 'DD'}">当当</el-menu-item>
     </el-menu>
     <div v-for="product in productsData[currentPlatForm]" :key="product.id" >
       <div class="product_item">
         <div style="flex: 1;">
-          <img :src="product.photoURL"  style="width: 50%; height: auto;" />
+          <img :src="product.photoURL"  style="width: 45%; height: auto;" />
         </div>
         <div style="flex: 3; padding-left: 10px;">
           <p style="text-align: left;">
@@ -90,8 +99,14 @@ onMounted(()=>{
                   alt="其他平台："
               />
               <img
-                  v-if="currentPlatForm === 'TB'"
-                  src="../assets/TB.png"
+                  v-if="currentPlatForm === 'DD'"
+                  src="../assets/DD.png"
+                  style="width: 2%; margin-right: 8px"
+                  alt="其他平台："
+              />
+              <img
+                  v-if="currentPlatForm === 'Amazon'"
+                  src="../assets/Amazon.png"
                   style="width: 2%; margin-right: 8px"
                   alt="其他平台："
               />
@@ -123,5 +138,10 @@ a:hover,
 a:active,
 a:visited {
   text-decoration: none;
+}
+.product-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
 }
 </style>
