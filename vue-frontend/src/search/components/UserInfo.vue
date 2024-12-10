@@ -123,6 +123,12 @@
                   style="width: 3.5%; margin-right: 8px"
                   alt="其他平台："
               />
+              <img
+                  v-if="product.platform === '苏宁'"
+                  src="../assets/SN.png"
+                  style="width: 3.5%; margin-right: 8px"
+                  alt="其他平台："
+              />
               <span style="color: #666666; font-size: 13px">{{product.shop}}</span>
             </div>
             <el-button v-if="product.lowReminderFlag === 0" type="primary" plain style="display:flex; justify-content: flex-end; margin-left: auto"

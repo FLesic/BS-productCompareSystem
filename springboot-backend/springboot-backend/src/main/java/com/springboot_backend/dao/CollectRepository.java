@@ -9,4 +9,5 @@ public interface CollectRepository extends JpaRepository<Collect, Integer> {
     List<Collect> findByProductID(String product_id);
     List<Collect> findByUserIDAndProductID(Integer user_id, String product_id);
     void deleteByUserIDAndProductID(Integer user_id, String product_id);
+    List<Collect> findByIsLowReminder(Integer isLowReminder);
 }

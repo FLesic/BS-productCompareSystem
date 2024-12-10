@@ -14,4 +14,5 @@ public interface CollectService {
     Integer deleteCollectById(int collect_id);
     Integer deleteCollectByUserAndProduct(int user_id, String product_id);
     Integer updateCollect(int user_id, String product_id, int isLowReminder);
+    List<Collect> getCollectByAllIsLowReminder();
 }

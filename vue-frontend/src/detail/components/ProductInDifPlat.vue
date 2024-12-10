@@ -2,7 +2,7 @@
 import {onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import axios from "axios";
-import {ElMessage} from "element-plus";
+import {ElLoading, ElMessage} from "element-plus";
 
 const productsData = ref({
   'JD': [
@@ -12,6 +12,9 @@ const productsData = ref({
   'Amazon': [
 
   ],
+  'SN':[
+
+  ]
 });
 const currentPlatForm = ref('JD');
 const store = useStore();
@@ -32,11 +35,19 @@ const pickProductToDif = (product)=> {
     case "亚马逊":
       productsData.value['Amazon'].push(product);
       break;
+    case "苏宁":
+      productsData.value['SN'].push(product);
+      break;
     default:
       break;
   }
 }
 onMounted(()=>{
+  const loading = ElLoading.service({
+    lock: true,
+    text: '正在获取相关数据...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
   axios.get('/product/compare-platform/', {
     params: {product_id: selectProduct.value.id}
   }).then(response => {
@@ -45,6 +56,8 @@ onMounted(()=>{
       productsData.value['JD'] = [];
       productsData.value['DD'] = [];
       productsData.value['Amazon'] = [];
+      productsData.value['SN'] = [];
+      loading.close();
       for(let i = 0; i < Response.data.length; i++){
         pickProductToDif(Response.data[i]);
       }
@@ -70,10 +83,11 @@ onMounted(()=>{
         default-active="1"
     >
       <el-text size="large" tag="b">不同平台比价：</el-text>
-      <el-menu-item index="1" @click="()=>{currentPlatForm = 'JD'}">京东</el-menu-item>
-      <el-menu-item index="2" @click="()=>{currentPlatForm = 'TB'}">淘宝</el-menu-item>
+<!--      <el-menu-item index="1" @click="()=>{currentPlatForm = 'JD'}">京东</el-menu-item>-->
+<!--      <el-menu-item index="2" @click="()=>{currentPlatForm = 'TB'}">淘宝</el-menu-item>-->
       <el-menu-item index="3" @click="()=>{currentPlatForm = 'Amazon'}">亚马逊</el-menu-item>
       <el-menu-item index="4" @click="()=>{currentPlatForm = 'DD'}">当当</el-menu-item>
+      <el-menu-item index="5" @click="()=>{currentPlatForm = 'SN'}">苏宁</el-menu-item>
     </el-menu>
     <div v-for="product in productsData[currentPlatForm]" :key="product.id" >
       <div class="product_item">
@@ -110,10 +124,16 @@ onMounted(()=>{
                   style="width: 2%; margin-right: 8px"
                   alt="其他平台："
               />
+              <img
+                  v-if="currentPlatForm === 'SN'"
+                  src="../assets/SN.png"
+                  style="width: 2%; margin-right: 8px"
+                  alt="其他平台："
+              />
               <span style="color: #666666; font-size: 15px">{{product.shop}}</span>
             </div>
             <el-button type="danger" style="display:flex; justify-content: flex-end; margin-left: auto">
-                <a v-bind:href="product.product_url">去看看</a>
+                <a v-bind:href="product.productURL">去看看</a>
             </el-button>
           </div>
         </div>

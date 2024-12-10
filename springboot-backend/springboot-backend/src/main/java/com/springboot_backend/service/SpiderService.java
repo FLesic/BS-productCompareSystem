@@ -14,4 +14,9 @@ public interface SpiderService {
 
     // 爬取当当网keywords的商品，存储于数据库中给，需要进行去重处理
     List<Product> DDSpider(String keywords) throws IOException;
+
+    // 爬取苏宁网keywords的商品，存储于数据库中给，需要进行去重处理
+    List<Product> SNSpider(String keywords) throws IOException;
+
+    void StoreProductAndDate(List<Product> productList) throws IOException;
 }

@@ -8,4 +8,5 @@ public interface ProductService {
     Product getProductById(String id);
     List<Product> searchProductByFuzzName(String name);
     List<Product> searchProductByFuzzDetail(String description);
+    void addProduct(Product product);
 }

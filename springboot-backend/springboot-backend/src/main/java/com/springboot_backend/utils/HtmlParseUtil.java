@@ -5,17 +5,23 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.*;
 @Component
 public class HtmlParseUtil {
     public static void main(String[] args) throws IOException {
         HtmlParseUtil htmlParseUtil = new HtmlParseUtil();
-        htmlParseUtil.parseJD("JAVA");
+        htmlParseUtil.parseSN("牛肉干");
     }
 
     public List<Product> parseJD(String keywords) throws IOException {
@@ -109,6 +115,7 @@ public class HtmlParseUtil {
                     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3").get();
             Elements productsElements = document.select("[data-component-type='s-search-result']");
             if(productsElements == null) {
+                System.out.println("亚马逊也干了");
                 return Collections.emptyList();
             }
             for (Element productElement : productsElements) {
@@ -161,7 +168,7 @@ public class HtmlParseUtil {
 //                System.out.println("商品链接：" + productURL);
 //                System.out.println("商品ID：" + productID);
             }
-            System.out.println("亚马逊关键词：" + keywords + ", 爬取成功");
+            System.out.println("亚马逊关键词：" + keywords + ", 爬取成功, 共计"+productList.size()+"项");
             return productList;
         } catch (Exception e) {
             e.printStackTrace();
@@ -200,6 +207,7 @@ public class HtmlParseUtil {
                 Element priceElement = productElement.getElementsByClass("price_n").first();
                 String price = priceElement != null ? priceElement.text().substring(1) : "unknown";
                 if(price == "unknown") continue;
+                price = price.replaceAll("[^0-9.]", "");// 使用正则表达式取出非数字部分
                 // 图片链接
                 Element photoURLElement = productElement.getElementsByTag("img").first();
                 String photoURL = photoURLElement.attr("data-original");
@@ -233,11 +241,90 @@ public class HtmlParseUtil {
                 productList.add(product);
 
             }
-            System.out.println("当当网关键词：" + keywords + "，爬取成功");
+            System.out.println("当当网关键词：" + keywords + "，爬取成功, 共计"+productList.size()+"项");
             return productList;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    public List<Product> parseSN(String keywords) throws IOException {
+        try{
+            // 加载苏宁信息
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless"); // 启用新的无头模式
+            System.setProperty("webdriver.chrome.driver", "D:/Software/chromedriver-win64/chromedriver-win64/chromedriver.exe");
+            WebDriver driver = new ChromeDriver(options);
+            driver.get("https://search.suning.com/"+keywords+"/");
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("window.scrollTo(0, document.body.scrollHeight);"); // 滚动到底部
+
+            Thread.sleep(2000); // 或者使用显式等待
+
+            // 等待页面加载完成
+            String pageSource = driver.getPageSource();
+            driver.quit();
+            Document document = Jsoup.parse(pageSource);
+//            System.out.println(document.html());
+            Element element = document.getElementById("product-list");
+            Elements elements = element.getElementsByTag("li");
+            List<Product> productList = new ArrayList<>();
+            for (Element productElement : elements) {
+                // 商品ID获取
+                String productID = productElement.attr("id");
+
+                // 商品名称详情链接获取
+                Element nameElement = productElement.getElementsByClass("title-selling-point").first();
+//                if(nameElement == null) continue;
+                Element subNameElement = nameElement.getElementsByTag("a").first();
+//                if(subNameElement == null) continue;
+                String name = subNameElement.text();
+                Element detailElement = subNameElement.getElementsByTag("em").first();
+                String detail = detailElement != null ? detailElement.text() : "暂无";
+                String productURL = subNameElement.attr("href");
+                if(productURL.startsWith("https"))
+                    continue;
+                productURL = "https:" + productURL.replace("https", "http");
+
+                // 图片获取
+                Element photoElement = productElement.getElementsByClass("res-img").first();
+                Element subPhotoElement = photoElement.getElementsByTag("img").first();
+                String photoURL = subPhotoElement.attr("src");
+
+                // 价格获取
+                Element priceElement = productElement.getElementsByClass("def-price").first();
+//                if(priceElement == null) continue;
+                String price = priceElement.text();
+                if (price.matches("^\\s*$")) {
+                    continue; // 是否没有加载出来
+                }
+                price = price.replaceAll("[^0-9.]", "");// 使用正则表达式取出非数字部分
+                // 店铺名称获取
+                Element storeElement = productElement.getElementsByClass("store-name").first();
+                String shop = storeElement != null ? storeElement.text() : "未知店铺";
+
+//                System.out.println("======================================================================");
+//                System.out.println("商品名称：" + name);
+//                System.out.println("商品价格：" + price);
+//                System.out.println("图片链接：" + photoURL);
+//                System.out.println("商品链接：" + productURL);
+//                System.out.println("商品ID：" + productID);
+                Product product = new Product();
+                product.setId("SN-" + productID);
+                product.setName(name);
+                product.setDetail(detail);
+                product.setPrice(Double.parseDouble(price));
+                product.setShop(shop);
+                product.setPhotoURL(photoURL);
+                product.setProductURL(productURL);
+                product.setPlatform("苏宁");
+                productList.add(product);
+            }
+            System.out.println("苏宁关键词："+keywords+"爬取成功, 共计"+productList.size()+"项");
+            return productList;
+        } catch(Exception e){
+            e.printStackTrace();
+            return Collections.emptyList();
         }
     }
 }

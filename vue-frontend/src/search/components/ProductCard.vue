@@ -3,6 +3,7 @@ import {computed, ref} from "vue";
 import JD from '../assets/JD.png'; // 使用 ES6 模块导入图片
 import Amazon from '../assets/Amazon.png';
 import DD from '../assets/DD.png';
+import SN from '../assets/SN.png';
 import axios from "axios";
 import {useStore} from "vuex";
 const props = defineProps({
@@ -17,6 +18,8 @@ const iconSrc = computed(() => {
       return Amazon;
     case '当当':
       return DD;
+    case '苏宁':
+      return SN;
     default:
       return null;
   }

@@ -28,4 +28,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> searchProductByFuzzDetail(String detail) {
         return productRepository.findByNameContainingIgnoreCase(detail);
     }
+
+    @Override
+    public void addProduct(Product product) {
+        productRepository.save(product);
+    }
 }

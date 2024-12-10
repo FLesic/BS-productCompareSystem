@@ -3,6 +3,7 @@ import {computed, onMounted, onUnmounted, ref} from "vue";
 import JD from "@/search/assets/JD.png";
 import DD from "@/search/assets/DD.png";
 import Amazon from "@/search/assets/Amazon.png"
+import SN from "@/search/assets/SN.png"
 import PriceHistory from "@/detail/components/PriceHistory.vue";
 import ProductInDifPlat from "@/detail/components/ProductInDifPlat.vue";
 import {useStore} from "vuex";
@@ -21,6 +22,8 @@ let iconSrc = computed(() => {
       return DD;
     case '亚马逊':
       return Amazon;
+    case '苏宁':
+      return SN;
     default:
       return null;
   }

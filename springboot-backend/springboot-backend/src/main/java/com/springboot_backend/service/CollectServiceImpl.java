@@ -74,4 +74,10 @@ public class CollectServiceImpl implements CollectService {
         collectRepository.save(collectList.get(0));
         return 1;
     }
+
+    @Override
+    public List<Collect> getCollectByAllIsLowReminder() {
+        //返回所有设置了降价提醒的收藏信息
+        return collectRepository.findByIsLowReminder(1);
+    }
 }

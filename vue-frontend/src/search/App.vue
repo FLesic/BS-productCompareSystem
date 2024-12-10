@@ -4,23 +4,18 @@ import {Search} from "@element-plus/icons-vue";
 import SearchOutput from "@/search/components/SearchOutput.vue";
 import {ref} from "vue";
 import axios from "axios";
-import {ElMessage} from "element-plus";
+import {ElLoading, ElMessage} from "element-plus";
 import {useStore} from "vuex";
 
 const userInput = ref(null);
 let queryProductList = []
-let productElement = {
-  product_id:0,
-  product_name:"",
-  price:0,
-  platform:"",
-  shop:"",
-  photo_url:"",
-  product_url:"",
-  detail:""
-}
 const store = useStore()
 const handleProductSearch = ()=>{
+  const loading = ElLoading.service({
+    lock: true,
+    text: '正在搜索中...',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
   axios.get('/product/search/', {
     params: {product_name: userInput.value},
   }).then(response => {
@@ -28,6 +23,7 @@ const handleProductSearch = ()=>{
     if(Response.success){
       queryProductList = []
       queryProductList = Response.data;
+      loading.close();
       store.dispatch('setProductList', queryProductList);
     }else{
       // 处理后端返回的错误
