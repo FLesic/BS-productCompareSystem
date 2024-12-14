@@ -16,6 +16,7 @@ public class ProductConvert {
         productDTO.setLowReminderFlag(lowReminderFlag);
         productDTO.setCollectFlag(collectFlag);
         productDTO.setCount(count);
+        productDTO.setDetail(product.getDetail());
         return productDTO;
     }
 }

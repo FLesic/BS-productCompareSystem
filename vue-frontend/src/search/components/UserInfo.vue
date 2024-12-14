@@ -97,7 +97,7 @@
         </div>
         <div style="flex: 3; padding-left: 10px;">
           <p style="text-align: left;">
-            <el-link href="./detail" style="color: #181818;font-size:larger" >{{ product.name }}</el-link>
+            <el-link href="./detail" style="color: #181818;font-size:larger" @click="handleLink(product)">{{ product.name }}</el-link>
           </p>
 
           <div style="display:flex; justify-content: start;text-align: left;font-size: smaller; margin-top:10px">
@@ -168,6 +168,19 @@ import axios from "axios";
 import {useStore} from "vuex";
 
 const store = useStore();
+const handleLink = (product)=>{
+  let newProduct = {};
+  newProduct.id = product.id;
+  newProduct.name = product.name;
+  newProduct.price = product.price;
+  newProduct.platform = product.platform;
+  newProduct.shop = product.shop;
+  newProduct.photoURL = product.photoURL;
+  newProduct.productURL = product.productURL;
+  newProduct.detail = product.detail;
+  store.dispatch("setSelectProduct", newProduct);
+  window.location.href = "/detail";
+}
 onMounted(() => {
   initializeFun();
 });

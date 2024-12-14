@@ -8,6 +8,16 @@ public class ProductDTO {
     private String shop;
     private String photoURL;
     private String productURL;
+    private String detail;
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
     private int lowReminderFlag;
     private int collectFlag;
     private int count;

@@ -119,13 +119,18 @@ public class HtmlParseUtil {
                 return Collections.emptyList();
             }
             for (Element productElement : productsElements) {
+//                System.out.println(productElement.html());
                 // 商品名称获取
-                Element nameElement = productElement.getElementsByClass("a-size-base-plus a-color-base a-text-normal").first();
-                if(nameElement == null) continue;
+                Element nameElement = productElement.getElementsByClass("a-size-base-plus a-spacing-none a-color-base a-text-normal").first();
+                if(nameElement == null)
+                {
+                    nameElement = productElement.getElementsByClass("a-size-base-plus a-color-base a-text-normal").first();
+                    if(nameElement == null) continue;
+                }
                 String name = nameElement.text();
 
                 // 商品链接获取
-                Element productURLElement = productElement.getElementsByClass("a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal").first();
+                Element productURLElement = productElement.getElementsByClass("a-link-normal").first();
                 String productURL = "https://www.amazon.com" + productURLElement.attr("href");
 
                 // 商品ID获取
@@ -267,6 +272,7 @@ public class HtmlParseUtil {
             Document document = Jsoup.parse(pageSource);
 //            System.out.println(document.html());
             Element element = document.getElementById("product-list");
+            if(element == null) return Collections.emptyList();
             Elements elements = element.getElementsByTag("li");
             List<Product> productList = new ArrayList<>();
             for (Element productElement : elements) {
