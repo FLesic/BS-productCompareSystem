@@ -165,19 +165,19 @@ const cancelSetLowReminder = ()=>{
                   </p>
                   <p style="text-align: left;color:#e23a3a;font-size: 25px">
                     ￥{{selectedProduct.price}}
-                    <el-button v-if="!collectFlag" type="warning" style="margin-top: 10px; margin-bottom: 10px"
+                    <el-button v-if="!collectFlag" type="warning" size = "small"  style="margin-top: 10px; margin-bottom: 10px"
                                @click="collectProduct">
                       收藏商品
                     </el-button>
-                    <el-button v-if="collectFlag && !lowPriceRemainder" type="primary" style="margin-top: 10px; margin-bottom: 10px"
+                    <el-button v-if="collectFlag && !lowPriceRemainder" type="primary" size = "small" style="margin-top: 10px; margin-bottom: 10px"
                                @click="setLowReminder">
                       降价提醒
                     </el-button>
-                    <el-button v-if="collectFlag && lowPriceRemainder" type="primary" style="margin-top: 10px; margin-bottom: 10px"
+                    <el-button v-if="collectFlag && lowPriceRemainder" type="primary" size = "small"  style="margin-top: 10px; margin-bottom: 10px"
                                @click="cancelSetLowReminder">
                       取消提醒
                     </el-button>
-                    <el-button v-if="collectFlag" type="warning" style="margin-top: 10px; margin-bottom: 10px"
+                    <el-button v-if="collectFlag" type="warning" size = "small" style="margin-top: 10px; margin-bottom: 10px"
                                @click="cancelCollectProduct">
                       取消收藏
                     </el-button>

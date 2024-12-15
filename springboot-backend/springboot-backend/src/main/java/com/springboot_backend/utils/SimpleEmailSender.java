@@ -44,7 +44,7 @@ public class SimpleEmailSender{
                         new InternetAddress(receiverEmail));
                 mimeMessage.setFrom(new InternetAddress("876320233@qq.com"));
                 mimeMessage.setSubject(subject);
-                mimeMessage.setText("亲爱的 " + receiverEmail + "," + message);
+                mimeMessage.setText(message);
             }
         };
         try {

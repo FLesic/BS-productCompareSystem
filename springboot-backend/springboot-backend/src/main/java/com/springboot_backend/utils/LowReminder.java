@@ -34,6 +34,33 @@ public class LowReminder {
 
     @PostConstruct
     public void lowRemind() throws IOException {
+
+        // 一个用于展示降价提示功能的测试
+//        List<Collect> collectList = collectService.getCollectByAllIsLowReminder();
+//        List<String> productIDs = new ArrayList<>();
+//        // 所有设置了降价提醒的商品需要重新爬取数据
+//        for (Collect collect : collectList) {
+//            if(!productIDs.contains(collect.getProductID())) {
+//                productIDs.add(collect.getProductID());
+//            }
+//        }
+//        for (String productID : productIDs) {
+//            Product product = productService.getProductById(productID);
+//            List<Collect> userCollectList = collectService.getCollectByProduct(productID);
+//            for (Collect collect : userCollectList) {
+//                // 没有设置降价提醒
+//                if (collect.getIsLowReminder() == 0)
+//                    continue;
+//                // 将该用户找出来
+//                User user = userService.getUserById(collect.getUserID());
+//                // 发送邮件
+//                String remindMessage = "亲爱的：" + user.getName() + ", 您订阅的商品：`" + product.getName() +
+//                        "`迎来了折扣！快来看看吧！" + "（商品链接为：" + product.getProductURL() + ")";
+//                String subject = "商品降价提醒";
+//                simpleEmailSender.sendMessage(user.getEmail(), subject, remindMessage);
+//            }
+//        }
+
         // 获取所有设置了降价提醒的信息
         List<Collect> collectList = collectService.getCollectByAllIsLowReminder();
         List<String> productIDs = new ArrayList<>();
