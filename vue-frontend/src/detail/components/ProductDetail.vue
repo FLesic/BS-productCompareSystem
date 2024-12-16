@@ -92,6 +92,7 @@ const cancelCollectProduct = ()=>{
     let Response = response.data;
     if(Response.success){
       ElMessage.success("取消收藏成功");
+      lowPriceRemainder.value = false;
       collectFlag.value = false;
     }
     else {

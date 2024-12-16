@@ -31,7 +31,7 @@
       </el-dropdown-menu>
     </template>
   </el-dropdown>
-  <el-dialog v-model="UserInfoVisible" width="30%" align-center :show-close="false">
+  <el-dialog v-model="UserInfoVisible" width="50%" align-center :show-close="false">
     <div style="font-size: 25px; font-weight: bold; color: #181818">用户ID： {{ userInfo.user_id }}</div>
     <div v-if="UserInfoVisible" style="text-align: left">
       <el-divider/>
@@ -57,7 +57,7 @@
       </el-button>
     </template>
   </el-dialog>
-  <el-dialog v-model="UserInfoUpdateVisible" width="30%" align-center :show-close="false">
+  <el-dialog v-model="UserInfoUpdateVisible" width="50%" align-center :show-close="false">
     <div style="font-size: 25px; font-weight: bold; color: #181818">用户ID： {{ userInfo.user_id }}</div>
     <div v-if="UserInfoUpdateVisible" style="text-align: left">
       <el-divider/>
@@ -88,7 +88,7 @@
       </el-button>
     </template>
   </el-dialog>
-  <el-dialog v-model="CollectInfoVisible" width = "1000" :show-close="false">
+  <el-dialog v-model="CollectInfoVisible" width = "80%" :show-close="false">
     <div style="font-size: 25px; font-weight: bold; color: #181818">收藏商品</div>
     <div v-for="product in collectProducts" :key="product.count" >
       <div v-if="product.collectFlag === 1" class="product_item">

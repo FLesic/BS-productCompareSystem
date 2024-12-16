@@ -36,7 +36,7 @@ const loginForm = ref({
 
 const rules = {
   user_nameOrEmail: [
-    {required: true, message: '请输入邮箱', trigger: 'blur'},
+    {required: true, message: '请输入用户名或邮箱', trigger: 'blur'},
   ],
   password: [{required: true, message: '请输入密码 ', trigger: 'blur'}]
 };
