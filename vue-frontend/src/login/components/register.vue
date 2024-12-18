@@ -102,7 +102,6 @@ const rules = {
         } else if(countdown.value === 0) {
           console.log('验证码过期')
           callback(new Error('验证码过期，请重新获取'));
-          ifClick.value = false;
         } else if (value !== registerCode.value) {
             callback(new Error('验证码不正确'));
         }

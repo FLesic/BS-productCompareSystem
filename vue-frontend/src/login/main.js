@@ -13,7 +13,11 @@ const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
-axios.defaults.baseURL = 'http://localhost:8080';
+// axios.defaults.baseURL = 'http://localhost:8080';
+// 部署使用：
+// 使用环境变量设置 axios 的 baseURL
+axios.defaults.baseURL = import.meta.env.VITE_BASEURL;
+// console.log('Base URL:', import.meta.env.VITE_BASEURL);
 app.use(createPinia())
 app.use(store)
 app.use(router)

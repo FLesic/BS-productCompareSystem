@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -258,7 +259,10 @@ public class HtmlParseUtil {
             // 加载苏宁信息
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--headless"); // 启用新的无头模式
+            options.addArguments("no-sandbox"); // Linux远端使用
+            options.addArguments("--disable-extensions"); // Linux远端使用
             System.setProperty("webdriver.chrome.driver", "D:/Software/chromedriver-win64/chromedriver-win64/chromedriver.exe");
+//            System.setProperty("webdriver.chrome.driver", "/usr/local/chromedriver-linux64/chromedriver"); //Linux远端使用
             WebDriver driver = new ChromeDriver(options);
             driver.get("https://search.suning.com/"+keywords+"/");
             JavascriptExecutor js = (JavascriptExecutor) driver;
