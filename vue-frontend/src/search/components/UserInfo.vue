@@ -12,26 +12,26 @@
           <el-icon style="margin-left:15px">
             <User/>
           </el-icon>
-          <span style="margin-left:8px; margin-right: 100px">个人中心</span>
+          <span class="userInfo-span">个人中心</span>
           <el-icon>
             <ArrowRight/>
           </el-icon>
         </el-dropdown-item>
         <el-dropdown-item @click="openCollectInfo">
           <el-icon style="margin-left:15px"><Star /></el-icon>
-          <span style="margin-left:8px; margin-right: 100px">收藏商品</span>
+          <span class="userInfo-span">收藏商品</span>
           <el-icon><ArrowRight /></el-icon>
         </el-dropdown-item>
         <el-dropdown-item>
           <el-icon style="margin-left:15px">
             <SwitchButton/>
           </el-icon>
-          <a href="/" style="margin-left:8px; margin-right: 100px">退出登录</a>
+          <a href="/" class="userInfo-span">退出登录</a>
         </el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
-  <el-dialog v-model="UserInfoVisible" width="50%" align-center :show-close="false">
+  <el-dialog v-model="UserInfoVisible" align-center :style="{width: userInfoDialogWidth}" :show-close="false">
     <div style="font-size: 25px; font-weight: bold; color: #181818">用户ID： {{ userInfo.user_id }}</div>
     <div v-if="UserInfoVisible" style="text-align: left">
       <el-divider/>
@@ -57,7 +57,7 @@
       </el-button>
     </template>
   </el-dialog>
-  <el-dialog v-model="UserInfoUpdateVisible" width="50%" align-center :show-close="false">
+  <el-dialog v-model="UserInfoUpdateVisible" :style="{width: userInfoDialogWidth}" align-center :show-close="false">
     <div style="font-size: 25px; font-weight: bold; color: #181818">用户ID： {{ userInfo.user_id }}</div>
     <div v-if="UserInfoUpdateVisible" style="text-align: left">
       <el-divider/>
@@ -88,7 +88,8 @@
       </el-button>
     </template>
   </el-dialog>
-  <el-dialog v-model="CollectInfoVisible" width = "80%" :show-close="false">
+
+  <el-dialog v-if="innerWidth > 500" v-model="CollectInfoVisible" width="80%" :show-close="false">
     <div style="font-size: 25px; font-weight: bold; color: #181818">收藏商品</div>
     <div v-for="product in collectProducts" :key="product.count" >
       <div v-if="product.collectFlag === 1" class="product_item">
@@ -156,10 +157,67 @@
       </el-button>
     </template>
   </el-dialog>
+
+  <el-dialog v-if="innerWidth <= 500" v-model="CollectInfoVisible" width="80%" :show-close="false">
+    <div style="font-size: 25px; font-weight: bold; color: #181818">收藏商品</div>
+    <div v-for="product in collectProducts" :key="product.count" >
+      <div v-if="product.collectFlag === 1">
+          <img :src="product.photoURL"  class="product-image"/>
+          <p style="text-align: left;">
+            <el-link href="./detail" style="color: #181818;" @click="handleLink(product)">{{ product.name }}</el-link>
+          </p>
+            <span style="text-align: left;color:#e23a3a;font-size: 20px; margin-right:20px">
+              ￥{{product.price}}
+            </span>
+            <img
+                v-if="product.platform === '亚马逊'"
+                src="../assets/Amazon.png"
+                style="width: 8%;"
+                alt="其他平台："
+            />
+            <img
+                v-if="product.platform === '当当'"
+                src="../assets/DD.png"
+                style="width: 8%;"
+                alt="其他平台："
+            />
+            <img
+                v-if="product.platform === '苏宁'"
+                src="../assets/SN.png"
+                style="width: 8%; "
+                alt="其他平台："
+            />
+            <span style="color: #666666; font-size: 13px">{{product.shop}}</span>
+            <div>
+              <el-button v-if="product.lowReminderFlag === 0" type="primary" plain
+                         @click="setLowReminder(product.count)">
+                降价提醒
+              </el-button>
+              <el-button v-if="product.lowReminderFlag === 1" type="primary" plain
+                         @click="cancelSetLowReminder(product.count)">
+                取消提醒
+              </el-button>
+              <el-button v-if="product.collectFlag === 1" type="warning" plain
+                         @click="cancelCollectProduct(product.count)">
+                取消收藏
+              </el-button>
+              <el-button type="danger" plain>
+                <a class="custom-link" v-bind:href="product.productURL">去看看</a>
+              </el-button>
+            </div>
+          </div>
+          <el-divider></el-divider>
+        </div>
+    <template #footer>
+      <el-button type="primary" @click="CollectInfoVisible=false">
+        确认
+      </el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {computed, onBeforeUnmount, ref} from "vue";
 import {onMounted} from 'vue';
 import {ArrowDown, ArrowRight, Avatar, Star, SwitchButton, User} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
@@ -181,9 +239,24 @@ const handleLink = (product)=>{
   store.dispatch("setSelectProduct", newProduct);
   window.location.href = "/detail";
 }
+let innerWidth = window.innerWidth;
 onMounted(() => {
   initializeFun();
+  window.addEventListener('resize', updateDialogWidth);
 });
+// 更新对话框宽度的方法
+const updateDialogWidth = () => {
+  // 强制重新计算 userInfoDialogWidth
+  userInfoDialogWidth = window.innerWidth <= 500 ? '80%' : '50%';
+  collectInfoDialogWidth = window.innerWidth <= 500 ? '50%' : '80%';
+  innerWidth = window.innerWidth;
+};
+// 移除事件监听器
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateDialogWidth);
+});
+let userInfoDialogWidth = window.innerWidth <= 500 ? '80%' : '50%'; // 根据屏幕宽度返回不同的宽度
+let collectInfoDialogWidth = window.innerWidth <= 500 ? '50%' : '80%';
 const initializeFun = () => {
   userInfo.value.user_id = store.getters.userID;
 
@@ -417,7 +490,23 @@ const notifyProductDetail = () => {
   top: 4vh; /* 根据需要调整 */
   right: 9vw; /* 根据需要调整 */
 }
-
+@media (max-width: 500px){
+  .top-right-container {
+    position: absolute;
+    top: 8vh; /* 根据需要调整 */
+    right: 4vw; /* 根据需要调整 */
+  }
+}
+.userInfo-span{
+  margin-left:8px;
+  margin-right: 100px;
+}
+@media (max-width: 500px){
+  .userInfo-span{
+    margin-left:1px;
+    margin-right: 40px;
+  }
+}
 .product_item {
   display: flex;
   align-items: center;
@@ -443,8 +532,8 @@ a:visited {
   color: white;
 }
 .product-image {
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
 }
 </style>

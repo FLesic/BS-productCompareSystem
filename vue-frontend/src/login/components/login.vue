@@ -96,4 +96,15 @@ const goToRegister = () => {
   width: 400px;
 }
 
+@media (max-width: 400px) {
+  .login-card {
+    width: 90vw;
+  }
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+  }
+}
 </style>

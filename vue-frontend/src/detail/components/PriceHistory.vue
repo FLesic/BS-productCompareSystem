@@ -40,7 +40,7 @@ const updateHistoryInfo = () =>{
   if(myChart){
     const option = {
       title: {
-        text: '商品历史价格趋势图',
+        text: '历史价格',
         color:'#FFFFFF'
       },
       tooltip: {

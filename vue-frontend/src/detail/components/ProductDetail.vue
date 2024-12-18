@@ -60,12 +60,19 @@ const getCollectInfo = ()=>{
     ElMessage.error(error.response.data.error);
   })
 }
+let innerWidth = ref(window.innerWidth);
 onMounted(()=>{
   getCollectInfo();
   bus.on('collect-info-update', getCollectInfo);
+  window.addEventListener('resize', updateWidth);
 })
+const updateWidth = () => {
+  // 强制重新计算 innerWidth
+  innerWidth.value = window.innerWidth;
+};
 onUnmounted(() => {
   bus.off('collect-info-update', getCollectInfo);
+  window.removeEventListener('resize', updateWidth);
 });
 const collectProduct = ()=>{
   axios.post('/collect/set/', {
@@ -142,7 +149,7 @@ const cancelSetLowReminder = ()=>{
 </script>
 
 <template>
-      <el-container>
+      <el-container v-if="innerWidth > 500">
         <el-header style="display: flex; justify-content: space-between; align-items: center;height: 300px">
           <!-- 左侧内容 -->
           <el-card style="max-width: 600px; max-height: 600px;">
@@ -194,6 +201,67 @@ const cancelSetLowReminder = ()=>{
           </el-card>
           <!-- 右侧内容 -->
           <div style="flex: 1; text-align: right;">
+            <PriceHistory></PriceHistory>
+          </div>
+        </el-header>
+        <el-main>
+          <ProductInDifPlat></ProductInDifPlat>
+        </el-main>
+      </el-container>
+
+      <!--手机端-->
+      <el-container v-if="innerWidth <= 500">
+        <el-header style="height: 850px">
+          <!-- 左侧内容 -->
+          <el-card style="max-width: 600px; max-height: 2000px;">
+            <div style="display: flex; align-items: center;">
+              <div style="flex: 2;">
+                <img :src="selectedProduct.photoURL" alt="Example Image" style="width: 80%; height: auto;" />
+              </div>
+              <!-- 右侧部分：详细信息 -->
+              <div style="flex: 2;">
+                <p style="text-align: left;">
+                  <img
+                      :src="iconSrc"
+                      style="width: 8%;"
+                      alt="其他平台："
+                  />
+                  {{ selectedProduct.name }}
+                </p>
+                <p style="text-align: left;font-size: smaller; background-color: #f6f6f6;">
+                  <span style="color: #999999">店铺来源：</span>
+                  <span style="color: #666666">{{selectedProduct.shop}}</span>
+                </p>
+                <p style="text-align: left;color:#e23a3a;font-size: 25px">
+                  ￥{{selectedProduct.price}}
+                  <el-button v-if="!collectFlag" type="warning" size = "small"  style="margin-top: 10px; margin-bottom: 10px"
+                             @click="collectProduct">
+                    收藏商品
+                  </el-button>
+                  <el-button v-if="collectFlag && !lowPriceRemainder" type="primary" size = "small" style="margin-top: 10px; margin-bottom: 10px"
+                             @click="setLowReminder">
+                    降价提醒
+                  </el-button>
+                  <el-button v-if="collectFlag && lowPriceRemainder" type="primary" size = "small"  style="margin-top: 10px; margin-bottom: 10px"
+                             @click="cancelSetLowReminder">
+                    取消提醒
+                  </el-button>
+                  <el-button v-if="collectFlag" type="warning" size = "small" style="margin-top: 10px; margin-bottom: 10px"
+                             @click="cancelCollectProduct">
+                    取消收藏
+                  </el-button>
+                </p>
+                <p style="text-align: left;font-size: smaller;">详细信息：{{selectedProduct.detail}}</p>
+                <el-divider></el-divider>
+                <el-button type="danger">
+                  <a v-bind:href="selectedProduct.productURL">去看看</a>
+                </el-button>
+
+              </div>
+            </div>
+          </el-card>
+          <el-divider></el-divider>
+          <div>
             <PriceHistory></PriceHistory>
           </div>
         </el-header>

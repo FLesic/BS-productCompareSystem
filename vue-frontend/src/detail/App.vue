@@ -108,4 +108,21 @@ body:before {
   0% {background-position: 0 0}
   0% {background-position: 100% -100%}
 }
+@media (max-width: 500px) {
+  .common-header {
+    //background-color: #409eff; /* Element UI 主题色 */
+    color: white;
+    text-align: center;
+    line-height: 60px; /* 与Element UI el-header的高度保持一致 */
+    font-size: 60px;
+    font-weight: bold;
+  }
+  .cool-font {
+    display: inline-block;
+    font-size: 50px;
+    color: white;
+    font-family: 'Righteous', serif;
+    text-shadow: .03em .03em 0 hsla(230,40%,50%,1);
+  }
+}
 </style>

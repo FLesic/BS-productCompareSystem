@@ -44,7 +44,7 @@ const handleProductSearch = ()=>{
         <h2 class = "cool-font" data-shadow='PriceCompare'>PriceCompare</h2>
         <UserInfo></UserInfo>
         <div></div>
-        <el-input v-model="userInput" style="max-width: 50vw" placeholder="请输入商品">
+        <el-input v-model="userInput" class = "product-input" placeholder="请输入商品">
           <template #append>
             <el-button :icon="Search" @click="handleProductSearch"/>
           </template>
@@ -76,7 +76,9 @@ const handleProductSearch = ()=>{
   font-weight: bold;
 
 }
-
+.product-input {
+  max-width: 50vw;
+}
 .main-content {
   flex: 1; /* 主要内容区域占据剩余空间 */
   //padding: 20px;
@@ -145,5 +147,25 @@ body:before {
 @keyframes shad-anim {
   0% {background-position: 0 0}
   0% {background-position: 100% -100%}
+}
+@media (max-width: 500px) {
+  .common-header {
+    //background-color: #409eff; /* Element UI 主题色 */
+    color: white;
+    text-align: center;
+    line-height: 60px; /* 与Element UI el-header的高度保持一致 */
+    font-size: 60px;
+    font-weight: bold;
+  }
+  .cool-font {
+    display: inline-block;
+    font-size: 50px;
+    color: white;
+    font-family: 'Righteous', serif;
+    text-shadow: .03em .03em 0 hsla(230,40%,50%,1);
+  }
+  .product-input{
+    max-width: 60vw;
+  }
 }
 </style>

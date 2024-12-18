@@ -42,12 +42,18 @@ const pickProductToDif = (product)=> {
       break;
   }
 }
+let innerWidth = ref(window.innerWidth);
+const updateWidth = () => {
+  // 强制重新计算 innerWidth
+  innerWidth.value = window.innerWidth;
+};
 onMounted(()=>{
   const loading = ElLoading.service({
     lock: true,
     text: '正在获取相关数据...',
     background: 'rgba(0, 0, 0, 0.7)',
   })
+  window.addEventListener('resize', updateWidth);
   axios.get('/product/compare-platform/', {
     params: {product_id: selectProduct.value.id}
   }).then(response => {
@@ -73,7 +79,7 @@ onMounted(()=>{
 </script>
 
 <template>
-  <el-card>
+  <el-card v-if="innerWidth > 500">
     <el-menu
         ellipsis
         class="el-menu-popper-demo"
@@ -135,6 +141,70 @@ onMounted(()=>{
             <el-button type="danger" style="display:flex; justify-content: flex-end; margin-left: auto">
                 <a v-bind:href="product.productURL">去看看</a>
             </el-button>
+          </div>
+        </div>
+      </div>
+      <el-divider></el-divider>
+    </div>
+  </el-card>
+
+  <el-card v-if="innerWidth <= 500">
+    <el-menu
+        ellipsis
+        class="el-menu-popper-demo"
+        mode="horizontal"
+        :popper-offset="16"
+        style="max-width: 1200px;position: relative;"
+        default-active="1"
+    >
+      <el-text size="large" tag="b">不同平台比价：</el-text>
+      <!--      <el-menu-item index="1" @click="()=>{currentPlatForm = 'JD'}">京东</el-menu-item>-->
+      <!--      <el-menu-item index="2" @click="()=>{currentPlatForm = 'TB'}">淘宝</el-menu-item>-->
+      <el-menu-item index="3" @click="()=>{currentPlatForm = 'Amazon'}">亚马逊</el-menu-item>
+      <el-menu-item index="4" @click="()=>{currentPlatForm = 'DD'}">当当</el-menu-item>
+      <el-menu-item index="5" @click="()=>{currentPlatForm = 'SN'}">苏宁</el-menu-item>
+    </el-menu>
+    <div v-for="product in productsData[currentPlatForm]" :key="product.id" >
+      <div class="product_item">
+        <div style="flex: 1;">
+          <img :src="product.photoURL"  style="width: 45%; height: auto;" />
+        </div>
+        <div style="flex: 3; padding-left: 10px;">
+          <p style="text-align: left;">
+            <el-link style="color: #181818;font-size:large" @click="handleCheckDetail(product)">
+              {{ product.name }}
+            </el-link>
+          </p>
+
+          <div style="display:flex; justify-content: start;text-align: left;font-size: smaller; margin-top:50px">
+            <div style="flex: 1;">
+              <span style="text-align: left;color:#e23a3a;font-size: 25px; margin-right:20px">
+                ￥{{product.price}}
+              </span>
+              <img
+                  v-if="currentPlatForm === 'DD'"
+                  src="../assets/DD.png"
+                  style="width: 15%;"
+                  alt="其他平台："
+              />
+              <img
+                  v-if="currentPlatForm === 'Amazon'"
+                  src="../assets/Amazon.png"
+                  style="width: 15%;"
+                  alt="其他平台："
+              />
+              <img
+                  v-if="currentPlatForm === 'SN'"
+                  src="../assets/SN.png"
+                  style="width: 15%;"
+                  alt="其他平台："
+              />
+              <span style="color: #666666; font-size: 15px">{{product.shop}}</span>
+              <el-button type="danger" style="display:flex; justify-content: flex-end; margin-left: auto">
+                  <a v-bind:href="product.productURL">去看看</a>
+              </el-button>
+            </div>
+
           </div>
         </div>
       </div>

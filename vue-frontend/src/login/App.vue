@@ -21,6 +21,23 @@ import {ShoppingCart} from "@element-plus/icons-vue";
 
 
 <style>
+@media (max-width: 500px) {
+  .common-header {
+    //background-color: #409eff; /* Element UI 主题色 */
+    color: white;
+    text-align: center;
+    line-height: 30px; /* 与Element UI el-header的高度保持一致 */
+    font-size: 30px;
+    font-weight: bold;
+  }
+  .cool-font {
+    display: inline-block;
+    font-size: 50px;
+    color: white;
+    font-family: 'Righteous', serif;
+    text-shadow: .03em .03em 0 hsla(230,40%,50%,1);
+  }
+}
 .common-layout {
 height: 100vh; /* 容器高度为视口高度 */
 display: flex;
