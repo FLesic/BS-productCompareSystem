@@ -178,7 +178,7 @@ public class HtmlParseUtil {
             return productList;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -251,7 +251,7 @@ public class HtmlParseUtil {
             return productList;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return Collections.emptyList();
         }
     }
     public List<Product> parseSN(String keywords) throws IOException {
